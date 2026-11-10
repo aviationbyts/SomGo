@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="nl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SomGo</title>
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#5b4be0"><link rel="icon" href="/icon-192.png"><link rel="apple-touch-icon" href="/apple-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="SomGo"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+:root{--bg:#f5f6fb;--card:#fff;--tx:#14163a;--mu:#6b6f93;--ac:#4c3fd1;--bd:#e4e6f3;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root{--bg:#0d0f24;--card:#171a3a;--tx:#eceefe;--mu:#9a9fc8;--bd:#272b57}}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--tx);font-family:-apple-system,Inter,system-ui,sans-serif;display:flex;min-height:100vh}
+nav{width:200px;padding:18px 10px;position:sticky;top:0;height:100vh;background:var(--card);border-right:1px solid var(--bd);display:flex;flex-direction:column;gap:3px}
+.logo{font-weight:800;font-size:20px;padding:4px 10px 16px;display:flex;gap:8px;align-items:center}
+.logo i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#2a2a8f,#7c3aed);display:inline-block}
+nav button{all:unset;cursor:pointer;padding:10px 12px;border-radius:12px;color:var(--mu);transition:.2s}
+nav button.on,nav button:hover{background:#4c3fd122;color:var(--tx)}
+main{flex:1;padding:28px;max-width:900px;padding-bottom:90px;min-width:0}h1{margin:0 0 16px;font-size:26px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:16px;margin-bottom:12px;overflow-x:auto}
+.hero{background:linear-gradient(135deg,#2a2a8f,#7c3aed);color:#fff;border:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:12px}.grid .card{margin:0}
+.big{font-size:28px;font-weight:700}.mu{color:var(--mu);font-size:14px}
+input,select,textarea,button.b{font:inherit;padding:9px 11px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);max-width:100%}
+textarea{width:100%;min-height:110px}button.b{background:var(--ac);color:#fff;border:0;cursor:pointer}button.g{background:var(--bd);color:var(--tx)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}.sp{justify-content:space-between}
+.les{border-left:4px solid var(--ac);padding:6px 10px;margin:6px 0;background:#4c3fd111;border-radius:8px}
+.done{text-decoration:line-through;opacity:.5}.credit{text-align:center;color:var(--mu);font-size:12px;margin-top:30px}
+@media(max-width:700px){body{display:block}nav{position:fixed;bottom:0;left:0;right:0;top:auto;width:100%;height:auto;flex-direction:row;overflow-x:auto;z-index:9;border-top:1px solid var(--bd);border-right:0;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+.logo{display:none}nav button{white-space:nowrap;padding:10px 12px;font-size:13px}main{padding:16px 14px 90px}}
+:root{--bg:#f3f4fb;--ac:#5b4be0;--sh:0 1px 2px #1a1c4a0d,0 8px 24px #1a1c4a0f}
+@media(prefers-color-scheme:dark){:root{--bg:#0b0d1f;--card:#141735;--sh:none}}
+body{font-size:15px;line-height:1.45}
+nav{width:232px;padding:22px 14px;gap:4px}
+.logo{font-size:22px;letter-spacing:-.02em;padding:2px 10px 22px}.logo i{width:30px;height:30px;border-radius:10px}
+nav button{display:flex;align-items:center;gap:12px;font-weight:500;font-size:15px}
+nav button svg{width:20px;height:20px;flex:none}
+nav button.on{background:linear-gradient(135deg,#5b4be0,#7c3aed);color:#fff;box-shadow:0 6px 16px #5b4be04d}
+nav button:hover:not(.on){background:#5b4be014}
+main{max-width:1080px;margin:0 auto;padding:36px 40px 60px;width:100%}
+h1{font-size:30px;letter-spacing:-.02em;margin-bottom:22px}h3{margin:0 0 12px;font-size:16px}
+.card{border-radius:20px;padding:20px;box-shadow:var(--sh);margin-bottom:16px}
+.grid{grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}.grid .card{padding:18px}
+.grid .card:nth-child(1){border-top:3px solid #5b4be0}.grid .card:nth-child(2){border-top:3px solid #3b82f6}.grid .card:nth-child(3){border-top:3px solid #f59e0b}.grid .card:nth-child(4){border-top:3px solid #10b981}
+.cols{display:grid;grid-template-columns:3fr 2fr;gap:16px;align-items:start}
+.week{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}.week .card{margin:0;padding:14px}
+.les{display:flex;gap:10px;align-items:center;border:0;background:hsl(var(--h) 80% 60% / .15);border-left:4px solid hsl(var(--h) 70% 55%);border-radius:12px;padding:8px 10px}
+.lt{font-weight:700;font-variant-numeric:tabular-nums;min-width:46px;display:flex;flex-direction:column;font-size:14px}.lt small{font-weight:400;color:var(--mu);font-size:12px}
+.ld{flex:1;display:flex;flex-direction:column;min-width:0}.x{padding:4px 8px!important;font-size:12px}
+.hero{padding:28px;background:linear-gradient(135deg,#3a2fb8,#8b5cf6)}.hero h1{margin:4px 0 0;color:#fff}
+input,select,textarea{padding:11px 13px;border-radius:12px}input:focus,textarea:focus,select:focus{outline:2px solid var(--ac)}
+button.b{border-radius:12px;padding:10px 16px;font-weight:600}
+.row input:not([type=checkbox]){flex:1 1 130px;min-width:0}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.cols{grid-template-columns:1fr}}
+@media(max-width:700px){nav{justify-content:space-around;gap:0;padding:6px 2px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1;flex-direction:column;gap:3px;padding:8px 2px;font-size:10px;align-items:center}nav button.on{background:none;color:var(--ac);box-shadow:none}
+main{padding:20px 16px 100px}h1{font-size:24px}.week{grid-template-columns:1fr}}
+html{-webkit-text-size-adjust:100%}
+input,select,textarea{font-size:16px;max-width:100%}
+nav{overflow-y:auto}
+@media(min-width:1400px){main{max-width:1240px}body{font-size:16px}}
+@media(min-width:701px) and (max-width:1000px){nav{width:76px;padding:18px 8px}nav .logo{justify-content:center;font-size:0;padding-bottom:18px}nav button{justify-content:center;padding:12px}nav button span{display:none}main{padding:28px 24px}}
+@media(max-width:700px){.row input:not([type=checkbox]),.row select{flex:1 1 100%}.row:not(.sp) .b{flex:1 1 auto;min-height:44px}input[type=date],input[type=time]{min-width:0;width:100%}.grid{gap:10px}.grid .card{padding:14px}.big{font-size:24px}.hero{padding:20px}.card{padding:16px;border-radius:18px}nav button{min-height:52px}}
+@media(max-width:360px){.grid{grid-template-columns:1fr}}
+@media(max-width:700px){nav{width:100%;left:0;right:0;bottom:0;top:auto;height:auto;overflow:hidden}nav button{flex:1 1 0;min-width:0;padding:8px 0;font-size:10px;overflow:hidden}nav button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+.ib{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:linear-gradient(135deg,#3a2fb8,#8b5cf6);color:#fff;border-radius:16px;padding:12px 16px;margin-bottom:16px;font-size:14px}.ib .b{background:#fff;color:#3a2fb8}.ib .x{background:#ffffff33;color:#fff}.ib div{display:flex;gap:8px;align-items:center}
+:root[data-theme=dark]{--bg:#0b0d1f;--card:#141735;--tx:#eceefe;--mu:#9a9fc8;--bd:#272b57;--sh:none}
+:root[data-theme=light]{--bg:#f3f4fb;--card:#fff;--tx:#14163a;--mu:#6b6f93;--bd:#e4e6f3;--sh:0 1px 2px #1a1c4a0d,0 8px 24px #1a1c4a0f}
+.tl{position:relative;margin:14px 0 8px 48px}.hr{position:absolute;left:-48px;right:0;border-top:1px solid var(--bd);font-size:11px;color:var(--mu)}.hr span{position:absolute;top:-8px;left:0;background:var(--card);padding-right:4px}
+.tb{position:absolute;left:8px;right:0;border-left:4px solid hsl(var(--h) 70% 55%);background:hsl(var(--h) 80% 60% / .18);border-radius:10px;padding:4px 8px;overflow:hidden;font-size:13px}.tb span{display:block;font-size:11px;color:var(--mu)}
+nav::-webkit-scrollbar{display:none}
+@media(max-width:700px){nav{overflow-x:auto;justify-content:flex-start}nav button{flex:0 0 auto;min-width:72px}}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.min.js"></script><script src="/config.js"></script></head><body>
+<nav id="nav"></nav><main id="v"></main>
+<script>
+const K='somgo2',p=n=>String(n).padStart(2,'0'),uid=()=>Math.random().toString(36).slice(2);
+let S={l:[],g:[],t:[],c:[],n:[]};try{S=Object.assign(S,JSON.parse(localStorage.getItem(K)||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}cloud()};
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const iso=d=>d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
+const DN=['zo','ma','di','wo','do','vr','za'],DL=['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
+const MN=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+const $=i=>document.getElementById(i).value;
+let tab='dash',W=0,msg='',cur=null,flip=false;
+const IC={dash:'<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',rooster:'<rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/>',cijfers:'<path d="M5 20V10M12 20V4M19 20v-7"/>',huiswerk:'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',leren:'<rect x="4" y="6" width="16" height="12" rx="2.5"/><path d="M8 3h8"/>',notities:'<path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h5"/>',over:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>'};
+const hu=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))%360;return h};
+function lessonNew(x){return `<div class="les" style="--h:${hu(x.t)}"><div class="lt">${esc(x.s)}<small>${esc(x.e)}</small></div><div class="ld"><b>${esc(x.t)}</b>${x.r?'<span class="mu">'+esc(x.r)+'</span>':''}</div><button class="b g x" onclick="del('l','${x.id}')">✕</button></div>`}
+const TABS=[['dash','Dashboard'],['rooster','Rooster'],['cijfers','Cijfers'],['huiswerk','Huiswerk'],['leren','Leren'],['notities','Notities'],['over','Over']];
+const avg=a=>{const w=a.reduce((x,g)=>x+g.w,0);return w?a.reduce((x,g)=>x+g.c*g.w,0)/w:null};
+const on=d=>S.l.filter(x=>x.date?x.date===iso(d):x.dow===d.getDay()).sort((a,b)=>a.s.localeCompare(b.s));
+const tm=s=>{const m=s.match(/(\d{1,2})[:.](\d{2})/);return p(+m[1])+':'+m[2]};
+function parseText(tx){let ctx={},n=0;const yr=new Date().getFullYear();
+ for(const raw of tx.split('\n')){const line=raw.trim();if(!line)continue;
+  const T=line.match(/(\d{1,2}[:.]\d{2})\s*(?:-|–|—|tot)\s*(\d{1,2}[:.]\d{2})/);let rest=T?line.replace(T[0],' '):line,c={};
+  let m=rest.match(/(\d{1,2})[-\/](\d{1,2})(?:[-\/](\d{2,4}))?/),m2=rest.match(new RegExp('(\\d{1,2})\\s+('+MN.join('|')+')[a-z]*(?:\\s+(\\d{4}))?','i')),w=rest.match(/\b(ma|di|wo|do|vr|za|zo)[a-z]*\b/i);
+  if(m){c.date=(m[3]?(+m[3]<100?2000+ +m[3]:+m[3]):yr)+'-'+p(m[2])+'-'+p(m[1]);rest=rest.replace(m[0],' ')}
+  else if(m2){c.date=(m2[3]||yr)+'-'+p(MN.indexOf(m2[2].toLowerCase().slice(0,3))+1)+'-'+p(m2[1]);rest=rest.replace(m2[0],' ')}
+  if(w&&!c.date){c.dow=DN.indexOf(w[1].toLowerCase());rest=rest.replace(w[0],' ')}else if(w){rest=rest.replace(w[0],' ')}
+  if(!T){if(c.date||c.dow!==undefined)ctx=c;continue}
+  const d=(c.date||c.dow!==undefined)?c:ctx;if(!d.date&&d.dow===undefined)continue;
+  const title=rest.replace(/[|;,\t]+/g,' ').replace(/\s+/g,' ').trim()||'Les';
+  S.l.push({id:uid(),date:d.date||null,dow:d.date?null:d.dow,s:tm(T[1]),e:tm(T[2]),t:title,r:''});n++}
+ return n}
+function parseICS(tx){const ev=tx.replace(/\r?\n[ \t]/g,'').split('BEGIN:VEVENT').slice(1);let n=0;
+ const dt=v=>{const m=v.match(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})?(Z)?/);if(!m)return null;return m[7]?new Date(Date.UTC(+m[1],m[2]-1,+m[3],+m[4],+m[5])):new Date(+m[1],m[2]-1,+m[3],+m[4],+m[5])};
+ for(const e of ev){const g=k=>{const m=e.match(new RegExp('^'+k+'[^:\\n]*:(.*)$','m'));return m?m[1].trim():''};
+  const a=dt(g('DTSTART')),b=dt(g('DTEND'));if(!a)continue;
+  S.l.push({id:uid(),date:iso(a),dow:null,s:p(a.getHours())+':'+p(a.getMinutes()),e:b?p(b.getHours())+':'+p(b.getMinutes()):'',t:g('SUMMARY').replace(/\\,/g,',')||'Les',r:g('LOCATION')});n++}
+ return n}
+async function syncLink(u,quiet){u=(u||S.link||'').trim().replace(/^webcal:/i,'https:');if(!u)return;try{const r=await fetch('/api/ics',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:u})});if(!r.ok)throw new Error((await r.text())||r.status);const tx=await r.text();S.l=S.l.filter(x=>x.src!=='ical');const n0=S.l.length,n=parseICS(tx);S.l.slice(n0).forEach(x=>x.src='ical');S.link=u;S.sync=Date.now();msg='Rooster bijgewerkt: '+n+' lessen.';save();if(tab==='rooster'||tab==='dash')R()}catch(e){msg='Automatisch ophalen lukt niet ('+String(e.message).slice(0,100)+'). Dit werkt alleen op de gehoste versie van SomGo. Hier kun je een .ics-bestand importeren.';if(!quiet||tab==='rooster')R()}}
+function exportICS(){const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//SomGo//NL','CALSCALE:GREGORIAN'];
+ const f=(ds,t)=>ds.replace(/-/g,'')+'T'+t.replace(':','')+'00';
+ for(const x of S.l){let ds=x.date;if(!ds){const d=new Date();while(d.getDay()!==x.dow)d.setDate(d.getDate()+1);ds=iso(d)}
+  L.push('BEGIN:VEVENT','UID:'+x.id+'@somgo','DTSTAMP:'+f(iso(new Date()),'00:00'),'DTSTART:'+f(ds,x.s),'DTEND:'+f(ds,x.e||x.s),'SUMMARY:'+x.t.replace(/,/g,'\\,'));
+  if(x.r)L.push('LOCATION:'+x.r.replace(/,/g,'\\,'));if(!x.date)L.push('RRULE:FREQ=WEEKLY');L.push('END:VEVENT')}
+ L.push('END:VCALENDAR');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([L.join('\r\n')],{type:'text/calendar'}));a.download='somgo-rooster.ics';a.click()}
+function lessonHTML(x){return lessonNew(x)}function lessonOld(x){return `<div class="les"><b>${esc(x.s)}${x.e?'–'+esc(x.e):''}</b> ${esc(x.t)}${x.r?' <span class="mu">· '+esc(x.r)+'</span>':''} <button class="b g" onclick="del('l','${x.id}')">✕</button></div>`}
+function del(k,id){S[k]=S[k].filter(x=>x.id!==id);save();R()}
+const V={
+dash(){const now=new Date(),hm=p(now.getHours())+':'+p(now.getMinutes()),td=on(now),nx=td.find(x=>x.e>=hm||x.s>=hm),open=S.t.filter(x=>!x.d).sort((a,b)=>(a.dl||'9').localeCompare(b.dl||'9')),due=S.c.reduce((n,x)=>n+x.k.filter(c=>c.due<=Date.now()).length,0),a=avg(S.g);
+ return `<div class="card hero"><div style="opacity:.8">${DL[now.getDay()]} ${now.getDate()} ${MN[now.getMonth()]}</div><h1>${now.getHours()<12?'Goedemorgen':now.getHours()<18?'Goedemiddag':'Goedenavond'}</h1></div>
+ <div class="grid"><div class="card"><div class="mu">Eerstvolgende les</div><b>${nx?esc(nx.s+' '+nx.t):'Geen les meer'}</b></div><div class="card"><div class="mu">Gemiddelde</div><div class="big">${a?a.toFixed(1):'–'}</div></div><div class="card"><div class="mu">Open taken</div><div class="big">${open.length}</div></div><div class="card"><div class="mu">Kaarten te oefenen</div><div class="big">${due}</div></div></div>
+ <div class="cols"><div class="card"><h3>Rooster vandaag</h3>${td.length?td.map(lessonHTML).join(''):'<p class="mu">Geen lessen. Importeer je rooster bij Rooster.</p>'}</div>
+ <div class="card"><h3>Eerstvolgende deadlines</h3>${open.slice(0,4).map(x=>`<div class="row sp"><span>${esc(x.v)} · ${esc(x.n)}</span><span class="mu">${esc(x.dl)}</span></div>`).join('')||'<p class="mu">Geen open taken.</p>'}</div></div>`},
+rooster(){const m=new Date();m.setDate(m.getDate()-((m.getDay()+6)%7)+W*7);let days='';
+ for(let i=0;i<7;i++){const d=new Date(m);d.setDate(m.getDate()+i);const ls=on(d);if(i>4&&!ls.length)continue;days+=`<div class="card"><b>${DL[d.getDay()]} ${d.getDate()} ${MN[d.getMonth()]}</b>${ls.map(lessonHTML).join('')||'<p class="mu">Geen lessen</p>'}${tasksOn(d)}</div>`}
+ return `<h1>Rooster</h1><div class="row"><button class="b g" onclick="W--;R()">←</button><button class="b g" onclick="W=0;R()">Deze week</button><button class="b g" onclick="W++;R()">→</button><button class="b ${rv==='week'?'':'g'}" onclick="rv='week';R()">Week</button><button class="b ${rv==='dag'?'':'g'}" onclick="rv='dag';R()">Dag</button><button class="b g" onclick="exportICS()">Exporteer naar agenda (.ics)</button></div>${msg?`<div class="card">${esc(msg)}</div>`:''}${rv==='dag'?dayTL():'<div class="week">'+days+'</div>'}
+ <div class="card"><h3>Somtoday-agendalink koppelen</h3><p class="mu">Plak hier de iCalender-link uit Somtoday (Agenda → Mijn instellingen). Je rooster wordt dan automatisch bijgewerkt. Zie de link als een wachtwoord en deel hem met niemand.</p><div class="row"><input id="il" type="password" placeholder="Plak hier je agendalink" value="${esc(S.link||'')}"><button class="b" onclick="if($('il'))syncLink($('il'))">Koppelen en ophalen</button>${S.link?`<button class="b g" onclick="S.link='';S.l=S.l.filter(x=>x.src!=='ical');save();R()">Ontkoppelen</button>`:''}</div>${S.sync?`<p class="mu">Laatst bijgewerkt: ${new Date(S.sync).toLocaleString('nl-NL')}</p>`:''}</div><div class="card"><b>Rooster plakken</b><p class="mu">Kopieer je rooster uit Somtoday en plak het hier. Per regel een tijd zoals 08:30–09:20, met een datum (10-11 of 10 november) of dag (maandag), bijvoorbeeld “Maandag 08:30-09:20 Wiskunde”. Een regel met alleen de dag of datum geldt voor de regels eronder. Weet je niet zeker of het lukt? Probeer het uit, het aantal herkende lessen zie je meteen.</p><textarea id="pt"></textarea><div class="row"><button class="b" onclick="msg='Herkend: '+parseText($('pt'))+' lessen.';save();R()">Importeer</button></div></div>
+ <div class="card"><b>Agenda-bestand importeren (.ics)</b><p class="mu">Uit Google Agenda, Apple Agenda of Somtoday, als daar een export of agenda-link voor is.</p><input type="file" accept=".ics" onchange="this.files[0].text().then(t=>{msg='Geïmporteerd: '+parseICS(t)+' lessen.';save();R()})"></div>
+ <div class="card"><b>Les toevoegen</b><div class="row"><input id="ld" type="date"><input id="ls" type="time"><input id="le" type="time"><input id="lt" placeholder="Vak"><input id="lr" placeholder="Lokaal" size="6"><button class="b" onclick="if($('ld')&&$('ls')&&$('lt')){S.l.push({id:uid(),date:$('ld'),dow:null,s:$('ls'),e:$('le'),t:$('lt'),r:$('lr')});save();R()}">Toevoegen</button></div><button class="b g" onclick="if(confirm('Alle lessen verwijderen?')){S.l=[];msg='';save();R()}">Alle lessen wissen</button></div>`},
+cijfers(){const vs=[...new Set(S.g.map(x=>x.v))],a=avg(S.g);
+ return `<h1>Cijfers</h1><div class="card"><b>Gemiddelde: ${a?a.toFixed(2):'–'}</b>${vs.map(v=>{const g=S.g.filter(x=>x.v===v);return `<div style="margin-top:10px"><div class="row sp"><b>${esc(v)}</b><b>${avg(g).toFixed(2)}</b></div>${g.map(x=>`<div class="row sp mu"><span>${esc(x.n)} (×${x.w})</span><span>${x.c} <button class="b g" onclick="del('g','${x.id}')">✕</button></span></div>`).join('')}</div>`}).join('')}</div>
+ <div class="card row"><input id="gv" placeholder="Vak"><input id="gn" placeholder="Toets"><input id="gc" placeholder="Cijfer" size="5"><input id="gw" placeholder="Weging" size="5" value="1"><button class="b" onclick="const c=parseFloat($('gc').replace(',','.'));if($('gv')&&!isNaN(c)){S.g.push({id:uid(),v:$('gv'),n:$('gn'),c,w:+$('gw')||1});save();R()}">Toevoegen</button></div>
+ <div class="card"><b>Welk cijfer heb ik nodig?</b><div class="row" style="margin-top:8px"><select id="dv">${vs.map(v=>`<option>${esc(v)}</option>`).join('')}</select><input id="dg" value="6" size="4" title="gewenst gemiddelde"><input id="dw" value="1" size="4" title="weging"><button class="b" onclick="const a=S.g.filter(x=>x.v===$('dv')),W2=a.reduce((s,x)=>s+x.w,0),Sm=a.reduce((s,x)=>s+x.c*x.w,0),w=+$('dw')||1,r=(parseFloat($('dg').replace(',','.'))*(W2+w)-Sm)/w;document.getElementById('cr').textContent='Je hebt een '+r.toFixed(1)+' nodig'+(r>10?' (niet haalbaar)':'')+'. Alleen een berekening, er gaat niets naar Somtoday.'">Bereken</button></div><p id="cr" class="mu">Vul gewenst gemiddelde en weging in.</p></div>
+ <div class="card"><b>CSV importeren</b><p class="mu">Per regel: vak;toets;cijfer;weging</p><textarea id="cv"></textarea><div class="row"><button class="b" onclick="$('cv').split('\\n').forEach(r=>{const x=r.split(/[;\\t]/).map(s=>s.trim()),c=parseFloat((x[2]||'').replace(',','.'));if(x.length>2&&!isNaN(c))S.g.push({id:uid(),v:x[0],n:x[1],c,w:+x[3]||1})});save();R()">Importeer</button></div></div>`},
+huiswerk(){const s=[...S.t].sort((a,b)=>a.d-b.d||(a.dl||'9').localeCompare(b.dl||'9'));
+ return `<h1>Huiswerk</h1><div class="card row"><input id="hv" placeholder="Vak"><input id="hn" placeholder="Taak"><input id="hd" type="date"><button class="b" onclick="if($('hn')){S.t.push({id:uid(),v:$('hv'),n:$('hn'),dl:$('hd'),d:false});save();R()}">Toevoegen</button></div>
+ <div class="card">${s.map(x=>`<div class="row sp"><label class="${x.d?'done':''}"><input type="checkbox" ${x.d?'checked':''} onchange="S.t.find(y=>y.id==='${x.id}').d=this.checked;save();R()"> ${esc(x.v)} · ${esc(x.n)}</label><span class="mu">${esc(x.dl)} <button class="b g" onclick="del('t','${x.id}')">✕</button></span></div>`).join('')||'<span class="mu">Nog geen taken. Alles hier is zelf toegevoegd.</span>'}</div>`},
+leren(){const L=S.c.find(x=>x.id===cur);
+ if(L){const cd=L.k.filter(c=>c.due<=Date.now()).sort((a,b)=>a.due-b.due)[0];
+  return `<h1>${esc(L.n)}</h1><button class="b g" onclick="cur=null;R()">← Terug</button><div class="card" style="margin-top:12px;text-align:center;padding:36px">${cd?`<div class="big">${esc(flip?cd.a:cd.q)}</div><div class="row" style="justify-content:center;margin-top:20px">${flip?`<button class="b g" onclick="ans(false)">Fout</button><button class="b" onclick="ans(true)">Goed</button>`:`<button class="b" onclick="flip=true;R()">Toon antwoord</button>`}</div>`:'<b>Klaar voor nu! Kom later terug.</b>'}</div>`}
+ return `<h1>Leerlijsten</h1>${S.c.map(x=>`<div class="card row sp"><div><b>${esc(x.n)}</b><div class="mu">${x.k.length} kaarten · ${x.k.filter(c=>c.due<=Date.now()).length} te oefenen</div></div><div><button class="b" onclick="cur='${x.id}';flip=false;R()">Oefenen</button> <button class="b g" onclick="del('c','${x.id}')">✕</button></div></div>`).join('')}
+ <div class="card"><b>Nieuwe lijst</b><div class="row" style="margin-top:8px"><input id="cn" placeholder="Naam"></div><textarea id="ct" placeholder="begrip;definitie"></textarea><div class="row" style="margin-top:8px"><button class="b" onclick="const k=$('ct').split('\\n').map(r=>r.split(/[;\\t]/)).filter(r=>r.length>1).map(r=>({q:r[0].trim(),a:r[1].trim(),b:0,due:0}));if($('cn')&&k.length){S.c.push({id:uid(),n:$('cn'),k});save();R()}">Maak lijst</button></div></div>`},
+notities(){return `<h1>Notities</h1><input id="nq" placeholder="Zoeken…" oninput="nf()" style="margin-bottom:12px"><div class="card"><div class="row"><input id="nv" placeholder="Vak"></div><textarea id="nt"></textarea><div class="row" style="margin-top:8px"><button class="b" onclick="if($('nt')){S.n.unshift({id:uid(),v:$('nv'),t:$('nt')});save();R()}">Opslaan</button></div></div><div id="nl"></div>`},
+over(){return `<h1>Over SomGo</h1>${acct()}<div class="card"><div class="big">SomGo</div><p>De slimme schoolomgeving.</p><p class="mu">Makers: Lennox &amp; Teun · Versie 0.2.0 · Status: Prototype</p></div><div class="card"><b>Privacy</b><p class="mu">Met een account worden je gegevens op de SomGo-server opgeslagen; andere gebruikers kunnen ze niet zien. Je agendalink blijft op dit apparaat. Alleen als je een agendalink koppelt, stuurt de pagina die link naar de SomGo-server om het rooster op te halen. De link wordt daar niet opgeslagen. Somtoday en StudyGo zijn niet gekoppeld: gegevens komen uit plakken, bestanden of handmatige invoer.</p></div><div class="card"><b>Nog niet beschikbaar</b><p class="mu">Accounts, AI-assistent, studieplanner, oefentoetsen, aanwezigheid, boekenbibliotheek, notificaties en delen.</p></div>`}};
+function nf(){const q=($('nq')||'').toLowerCase();document.getElementById('nl').innerHTML=S.n.filter(x=>(x.v+x.t).toLowerCase().includes(q)).map(x=>`<div class="card"><div class="row sp"><b>${esc(x.v||'Algemeen')}</b><button class="b g" onclick="del('n','${x.id}')">✕</button></div><div style="white-space:pre-wrap">${esc(x.t)}</div></div>`).join('')}
+function ans(ok){const L=S.c.find(x=>x.id===cur),cd=L.k.filter(c=>c.due<=Date.now()).sort((a,b)=>a.due-b.due)[0],ST=[0,1,2,4,8,16];cd.b=ok?Math.min(cd.b+1,5):0;cd.due=Date.now()+ST[cd.b]*864e5+(ok?0:6e4);flip=false;save();R()}
+function R(){if(gate())return;document.getElementById('nav').innerHTML='<div class="logo"><i></i>SomGo</div>'+TABS.map(([k,t])=>`<button class="${tab===k?'on':''}" onclick="tab='${k}';R()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IC[k]}</svg><span>${t}</span></button>`).join('');
+ document.getElementById('v').innerHTML=ibar()+V[tab]()+'<p class="credit">SomGo · Gemaakt door Lennox &amp; Teun. · <a href="/privacy.html" style="color:inherit">Privacy</a> · <a href="/voorwaarden.html" style="color:inherit">Voorwaarden</a></p>';if(tab==='notities')nf();window.scrollTo(0,0)}
+const CFG=window.SOMGO||{};let SB=null,USER=null,ready=false,authMode='login',amsg='',cst='',ct=null,dirty=false;
+try{if(CFG.url&&CFG.key&&window.supabase)SB=supabase.createClient(CFG.url,CFG.key)}catch(e){}
+const EMPTY=()=>({l:[],g:[],t:[],c:[],n:[]});
+function gate(){const n=document.getElementById('nav'),v=document.getElementById('v');
+ if(SB&&!ready){n.style.display='none';v.innerHTML='<p class="mu">Laden…</p>';return true}
+ if(SB&&(!USER||authMode==='newpw')){n.style.display='none';v.innerHTML=ibar()+authView()+legal();return true}
+ n.style.display='';return false}
+function authView(){const m=authMode,T={login:'Inloggen',signup:'Account maken',reset:'Wachtwoord herstellen',newpw:'Nieuw wachtwoord'}[m],B={login:'Inloggen',signup:'Account maken',reset:'Stuur herstellink',newpw:'Opslaan'}[m];
+ const lk=(x,t)=>`<a href="#" style="color:var(--ac)" onclick="authMode='${x}';amsg='';R();return false">${t}</a>`;
+ return `<div class="card" style="max-width:420px;margin:8vh auto"><div class="logo" style="padding:0 0 14px;display:flex"><i></i>SomGo</div><h1 style="font-size:22px">${T}</h1>
+ ${m==='signup'?'<div class="row"><input id="an" placeholder="Naam" autocomplete="name"></div>':''}
+ ${m!=='newpw'?'<div class="row"><input id="ae" type="email" placeholder="E-mailadres" autocomplete="email"></div>':''}
+ ${m!=='reset'?`<div class="row"><input id="ap" type="password" placeholder="${m==='newpw'?'Nieuw wachtwoord':'Wachtwoord'} (min. 8 tekens)" autocomplete="${m==='login'?'current-password':'new-password'}"></div>`:''}
+ ${m==='signup'?'<label class="mu"><input id="ak" type="checkbox"> Ik ben 16 of ouder, of mijn ouder/voogd geeft toestemming. Mijn gegevens worden opgeslagen zodat SomGo werkt.</label>':''}
+ ${amsg?`<p class="mu">${esc(amsg)}</p>`:''}
+ <div class="row" style="margin-top:10px"><button class="b" onclick="doAuth()">${B}</button></div>
+ ${m==='login'||m==='signup'?'<div class="row"><button class="b g" onclick="google()">Doorgaan met Google</button></div>':''}
+ <p class="mu">${m==='login'?lk('signup','Account maken')+' · '+lk('reset','Wachtwoord vergeten'):lk('login','Terug naar inloggen')}</p></div>`}
+async function doAuth(){amsg='';const g=i=>(document.getElementById(i)||{}).value||'';
+ try{const em=g('ae').trim(),pw=g('ap');
+  if(authMode==='signup'){const nm=g('an').trim();if(!nm||!em||pw.length<8||!document.getElementById('ak').checked){amsg='Vul je naam en e-mailadres in, kies een wachtwoord van minstens 8 tekens en vink de toestemming aan.';return R()}
+   const {data,error}=await SB.auth.signUp({email:em,password:pw,options:{data:{name:nm},emailRedirectTo:location.origin}});if(error)throw error;
+   amsg=data.session?'':'Account gemaakt! Klik op de bevestigingslink in je e-mail en log daarna in.'}
+  else if(authMode==='reset'){const {error}=await SB.auth.resetPasswordForEmail(em,{redirectTo:location.origin});if(error)throw error;amsg='Als dit e-mailadres bestaat, is er een link gestuurd.'}
+  else if(authMode==='newpw'){if(pw.length<8){amsg='Minimaal 8 tekens.';return R()}const {error}=await SB.auth.updateUser({password:pw});if(error)throw error;authMode='login';amsg=''}
+  else{const {error}=await SB.auth.signInWithPassword({email:em,password:pw});if(error)throw error}
+ }catch(e){amsg=e.message||'Er ging iets mis'}R()}
+async function google(){const {error}=await SB.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin}});if(error){amsg=error.message;R()}}
+async function logout(){try{await SB.auth.signOut()}catch(e){}S=EMPTY();try{localStorage.removeItem(K)}catch(e){}USER=null;tab='dash';R()}
+async function delAcc(){if(!confirm('Je account en al je gegevens worden definitief verwijderd. Doorgaan?'))return;const {error}=await SB.rpc('delete_own_account');if(error){alert('Verwijderen mislukt: '+error.message);return}await logout()}
+function exportData(){const d={...S};delete d.link;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({account:USER.email,gegevens:d},null,2)],{type:'application/json'}));a.download='somgo-mijn-gegevens.json';a.click()}
+function acct(){if(!SB||!USER)return'';const m=USER.user_metadata||{};return `<div class="card"><h3>Account</h3><p><b>${esc(m.name||m.full_name||'')}</b><br><span class="mu">${esc(USER.email)}</span></p><p class="mu">${esc(cst)}</p><div class="row"><button class="b g" onclick="logout()">Uitloggen</button><button class="b g" onclick="exportData()">Mijn gegevens downloaden</button><button class="b g" onclick="delAcc()">Account verwijderen</button></div></div>`}
+function cloud(){if(!SB||!USER)return;dirty=true;clearTimeout(ct);ct=setTimeout(push,1200)}
+async function push(){if(!SB||!USER)return;const d={...S};delete d.link;delete d.sync;
+ const {error}=await SB.from('userdata').upsert({user_id:USER.id,data:d,updated_at:new Date().toISOString()});cst=error?'Opslaan in account mislukt: '+error.message:'Opgeslagen in je account';if(!error)dirty=false}
+async function load(){const {data,error}=await SB.from('userdata').select('data').eq('user_id',USER.id).maybeSingle();
+ if(error){cst='Laden mislukt: '+error.message;R();return}
+ if(data&&data.data){const k=S.link,s=S.sync;S=Object.assign(EMPTY(),data.data);if(k){S.link=k;S.sync=s}try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}cst='Opgeslagen in je account'}else await push();
+ R();autoSync()}
+function autoSync(){if(S.link&&Date.now()-(S.sync||0)>36e5)syncLink(S.link,true)}
+async function boot(){if(!SB){R();return autoSync()}
+ try{const {data}=await SB.auth.getSession();USER=data.session?data.session.user:null}catch(e){}
+ SB.auth.onAuthStateChange((ev,s)=>{if(ev==='PASSWORD_RECOVERY'){authMode='newpw';USER=s&&s.user;R();return}const u=s?s.user:null;if((u?u.id:0)!==(USER?USER.id:0)){USER=u;u?load():R()}});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&USER&&!dirty)load()});
+ ready=true;USER?await load():R()}
+
+let DP=null;const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();DP=e;R()});
+window.addEventListener('appinstalled',()=>{DP=null;R()});
+async function inst(){if(!DP)return;DP.prompt();try{await DP.userChoice}catch(e){}DP=null;R()}
+function hideIb(){try{localStorage.setItem('somgo:ib','1')}catch(e){}R()}
+function ibar(){let h='';try{h=localStorage.getItem('somgo:ib')}catch(e){}if(standalone()||h==='1')return'';
+ const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);let t,b='';
+ if(DP){t='Download nu de SomGo-app: een eigen venster op je computer, of een icoon op je telefoon.';b='<button class="b" onclick="inst()">Download app</button>'}
+ else if(ios)t='Download SomGo als app: tik op Deel (vierkantje met pijl) en kies “Zet op beginscherm”.';
+ else t='Download SomGo als app: open deze website in Chrome of Edge en kies “Installeren” in de adresbalk.';
+ return `<div class="ib"><span>${t}</span><div>${b}<button class="b x" onclick="hideIb()" aria-label="Sluiten">✕</button></div></div>`}
+const mins=t=>{const m=String(t||'0:0').split(':');return +m[0]*60+ +m[1]};
+let rv='week',DD=0,T=null;
+function tasksOn(d){return S.t.filter(x=>x.dl===iso(d)&&!x.d).map(x=>`<div class="les" style="--h:35"><div class="ld"><b>📌 ${esc(x.n)}</b><span class="mu">${esc(x.v)} · deadline</span></div></div>`).join('')}
+function dayTL(){const d=new Date();d.setDate(d.getDate()+DD);const ls=on(d);let a=480,b=1020;ls.forEach(x=>{a=Math.min(a,Math.floor(mins(x.s)/60)*60);b=Math.max(b,Math.ceil(mins(x.e||x.s)/60)*60)});const H=(b-a)/60;let g='';
+ for(let i=0;i<=H;i++)g+=`<div class="hr" style="top:${i*56}px"><span>${p(a/60+i)}:00</span></div>`;
+ const bl=ls.map(x=>`<div class="tb" style="--h:${hu(x.t)};top:${(mins(x.s)-a)*56/60}px;height:${Math.max(28,(mins(x.e||x.s)-mins(x.s))*56/60)}px"><b>${esc(x.t)}</b><span>${esc(x.s)}–${esc(x.e)} ${esc(x.r)}</span></div>`).join('');
+ return `<div class="card"><div class="row sp"><button class="b g" onclick="DD--;R()">←</button><b>${DL[d.getDay()]} ${d.getDate()} ${MN[d.getMonth()]}</b><button class="b g" onclick="DD++;R()">→</button></div><div class="tl" style="height:${H*56}px">${g}${bl}</div>${tasksOn(d)}</div>`}
+function gradeChart(){if(S.g.length<2)return'';const pts=S.g.map((_,i)=>avg(S.g.slice(0,i+1))),W=300,Hh=100,x=i=>10+i*(W-20)/(pts.length-1),y=v=>Hh-10-(v-1)*(Hh-20)/9;
+ return `<div class="card"><h3>Ontwikkeling gemiddelde</h3><svg viewBox="0 0 ${W} ${Hh}" style="width:100%;height:auto"><line x1="10" x2="${W-10}" y1="${y(5.5)}" y2="${y(5.5)}" stroke="#ef4444" stroke-dasharray="3" opacity=".5"/><polyline points="${pts.map((v,i)=>x(i)+','+y(v)).join(' ')}" fill="none" stroke="#5b4be0" stroke-width="2.5" stroke-linejoin="round"/>${pts.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="3" fill="#5b4be0"/>`).join('')}</svg><div class="mu">Gestippelde lijn = 5,5. Op volgorde van invoer.</div></div>`}
+const _cij=V.cijfers;V.cijfers=()=>_cij().replace('<h1>Cijfers</h1>','<h1>Cijfers</h1>'+gradeChart());
+V.aanw=()=>{S.a=S.a||[];const ty=['Te laat','Afwezig (geoorloofd)','Afwezig (ongeoorloofd)','Verlof','Ziek'];
+ return `<h1>Aanwezigheid</h1><div class="card mu">Dit is je eigen administratie. De officiële registratie staat in Somtoday en kun je hier niet wijzigen.</div><div class="grid">${ty.map(t=>`<div class="card"><div class="mu">${t}</div><div class="big">${S.a.filter(x=>x.t===t).length}</div></div>`).join('')}</div>
+ <div class="card row"><input id="ad" type="date" value="${iso(new Date())}"><select id="at">${ty.map(t=>`<option>${t}</option>`).join('')}</select><input id="ao" placeholder="Vak of opmerking"><button class="b" onclick="if($('ad')){S.a.push({id:uid(),d:$('ad'),t:$('at'),n:$('ao')});save();R()}">Toevoegen</button></div>
+ <div class="card">${[...S.a].sort((a,b)=>b.d.localeCompare(a.d)).map(x=>`<div class="row sp"><span>${esc(x.d)} · <b>${esc(x.t)}</b> <span class="mu">${esc(x.n)}</span></span><button class="b g x" onclick="del('a','${x.id}')">✕</button></div>`).join('')||'<span class="mu">Nog niets genoteerd.</span>'}</div>`};
+const norm=s=>String(s).toLowerCase().replace(/[^\p{L}\p{N} ]/gu,'').replace(/\s+/g,' ').trim();
+const fo=()=>setTimeout(()=>{const e=document.getElementById('ta');if(e&&!e.disabled)e.focus()},0);
+function tStart(){const L=S.c.find(x=>x.id===$('tl'));if(!L||L.k.length<2){alert('Kies een lijst met minstens 2 kaarten.');return}const m=$('tm'),n=Math.min(+$('tn')||10,L.k.length);
+ T={L,q:[...L.k].sort(()=>Math.random()-.5).slice(0,n),i:0,ok:0,wrong:[],type:m.startsWith('mc')?'mc':'typ',rev:m.endsWith('r'),opts:{},fb:null,t0:Date.now()};R();fo()}
+function tq(){const c=T.q[T.i];return{c,p0:T.rev?c.a:c.q,ans:T.rev?c.q:c.a}}
+function tAns(v){if(T.fb)return;const{c,ans}=tq(),ok=T.type==='mc'?v===ans:norm(v)===norm(ans);T.fb={ok,ans,v};if(ok)T.ok++;else{T.wrong.push(c);c.b=0;c.due=0}save();R()}
+function tNext(){T.fb=null;T.i++;R();fo()}
+function tRetry(){T={...T,q:[...T.wrong],i:0,ok:0,wrong:[],opts:{},fb:null,t0:Date.now()};R();fo()}
+setInterval(()=>{const e=document.getElementById('tt');if(e&&T)e.textContent=Math.floor((Date.now()-T.t0)/1000)+' s'},1000);
+V.toets=()=>{
+ if(!T)return `<h1>Oefentoetsen</h1><div class="card mu">Oefentoetsen maak je zelf van je leerlijsten. Het zijn geen echte schooltoetsen.</div><div class="card"><div class="row"><select id="tl">${S.c.map(x=>`<option value="${x.id}">${esc(x.n)} (${x.k.length})</option>`).join('')}</select><select id="tm"><option value="mc">Meerkeuze</option><option value="typ">Typ het antwoord</option><option value="mcr">Meerkeuze, omgekeerd</option><option value="typr">Typen, omgekeerd</option></select><input id="tn" type="number" value="10" min="2" max="50" style="max-width:90px"><button class="b" onclick="tStart()">Start toets</button></div>${S.c.length?'':'<p class="mu">Maak eerst een lijst bij Leren.</p>'}</div>`;
+ if(T.i>=T.q.length){const sec=Math.round((Date.now()-T.t0)/1000);return `<h1>Resultaat</h1><div class="card hero"><div class="big">${T.ok} / ${T.q.length}</div><div>${Math.round(100*T.ok/T.q.length)}% · ${Math.floor(sec/60)} min ${sec%60} s</div></div><div class="card"><h3>Foutenoverzicht</h3>${T.wrong.map(c=>`<div class="row sp"><span>${esc(T.rev?c.a:c.q)}</span><b>${esc(T.rev?c.q:c.a)}</b></div>`).join('')||'<span class="mu">Alles goed! 🎉</span>'}<p class="mu">Foute begrippen komen sneller terug bij Leren.</p></div><div class="row">${T.wrong.length?'<button class="b" onclick="tRetry()">Oefen fouten opnieuw</button>':''}<button class="b g" onclick="T=null;R()">Nieuwe toets</button></div>`}
+ const{c,p0,ans}=tq(),f=T.fb;let body;
+ if(T.type==='mc'){if(!T.opts[T.i]){const pool=T.L.k.filter(x=>x!==c).map(x=>T.rev?x.q:x.a).filter(o=>o!==ans).sort(()=>Math.random()-.5).slice(0,3);T.opts[T.i]=[ans,...pool].sort(()=>Math.random()-.5)}
+  body=T.opts[T.i].map((o,j)=>`<div class="row"><button class="b g" style="width:100%;text-align:left" ${f?'disabled':''} onclick="tAns(T.opts[T.i][${j}])">${esc(o)}</button></div>`).join('')}
+ else body=`<div class="row"><input id="ta" ${f?'disabled':''} placeholder="Typ je antwoord" value="${f?esc(f.v):''}" onkeydown="if(event.key==='Enter')tAns(this.value)"><button class="b" ${f?'disabled':''} onclick="tAns($('ta'))">Controleer</button></div>`;
+ return `<div class="row sp"><span class="mu">Vraag ${T.i+1} van ${T.q.length} · <span id="tt">0 s</span></span><button class="b g" onclick="T=null;R()">Stop</button></div><div class="card"><div class="big" style="margin-bottom:14px">${esc(p0)}</div>${body}${f?`<p>${f.ok?'✅ Goed!':'❌ Fout. Het antwoord is: <b>'+esc(f.ans)+'</b>'}</p><button class="b" onclick="tNext()">${T.i+1>=T.q.length?'Resultaat':'Volgende'}</button>`:''}</div>`};
+function applyTheme(){let t='auto';try{t=localStorage.getItem('somgo:theme')||'auto'}catch(e){}if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.dataset.theme=t}
+function setTheme(t){try{localStorage.setItem('somgo:theme',t)}catch(e){}applyTheme();R()}
+const legal=()=>'<p class="credit"><a href="/privacy.html" style="color:inherit">Privacy</a> · <a href="/voorwaarden.html" style="color:inherit">Voorwaarden</a></p>';
+const _over=V.over;V.over=()=>_over()+`<div class="card"><h3>Weergave</h3><div class="row"><button class="b g" onclick="setTheme('auto')">Automatisch</button><button class="b g" onclick="setTheme('light')">Licht</button><button class="b g" onclick="setTheme('dark')">Donker</button></div></div><div class="card"><h3>Juridisch</h3><p><a href="/privacy.html">Privacyverklaring</a><br><a href="/voorwaarden.html">Gebruiksvoorwaarden</a></p></div>`;
+Object.assign(IC,{aanw:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',toets:'<path d="M9 3h6v4H9zM6 5h12v16H6z"/><path d="m9 14 2 2 4-4"/>'});
+TABS.splice(4,0,['aanw','Aanwezig']);TABS.splice(6,0,['toets','Toetsen']);
+applyTheme();
+
+boot();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
+</script></body></html>

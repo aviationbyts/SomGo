@@ -60,6 +60,12 @@ nav{overflow-y:auto}
 @media(max-width:360px){.grid{grid-template-columns:1fr}}
 @media(max-width:700px){nav{width:100%;left:0;right:0;bottom:0;top:auto;height:auto;overflow:hidden}nav button{flex:1 1 0;min-width:0;padding:8px 0;font-size:10px;overflow:hidden}nav button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
 .ib{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:linear-gradient(135deg,#3a2fb8,#8b5cf6);color:#fff;border-radius:16px;padding:12px 16px;margin-bottom:16px;font-size:14px}.ib .b{background:#fff;color:#3a2fb8}.ib .x{background:#ffffff33;color:#fff}.ib div{display:flex;gap:8px;align-items:center}
+:root[data-theme=dark]{--bg:#0b0d1f;--card:#141735;--tx:#eceefe;--mu:#9a9fc8;--bd:#272b57;--sh:none}
+:root[data-theme=light]{--bg:#f3f4fb;--card:#fff;--tx:#14163a;--mu:#6b6f93;--bd:#e4e6f3;--sh:0 1px 2px #1a1c4a0d,0 8px 24px #1a1c4a0f}
+.tl{position:relative;margin:14px 0 8px 48px}.hr{position:absolute;left:-48px;right:0;border-top:1px solid var(--bd);font-size:11px;color:var(--mu)}.hr span{position:absolute;top:-8px;left:0;background:var(--card);padding-right:4px}
+.tb{position:absolute;left:8px;right:0;border-left:4px solid hsl(var(--h) 70% 55%);background:hsl(var(--h) 80% 60% / .18);border-radius:10px;padding:4px 8px;overflow:hidden;font-size:13px}.tb span{display:block;font-size:11px;color:var(--mu)}
+nav::-webkit-scrollbar{display:none}
+@media(max-width:700px){nav{overflow-x:auto;justify-content:flex-start}nav button{flex:0 0 auto;min-width:72px}}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.min.js"></script><script src="/config.js"></script></head><body>
 <nav id="nav"></nav><main id="v"></main>
 <script>
@@ -113,8 +119,8 @@ dash(){const now=new Date(),hm=p(now.getHours())+':'+p(now.getMinutes()),td=on(n
  <div class="cols"><div class="card"><h3>Rooster vandaag</h3>${td.length?td.map(lessonHTML).join(''):'<p class="mu">Geen lessen. Importeer je rooster bij Rooster.</p>'}</div>
  <div class="card"><h3>Eerstvolgende deadlines</h3>${open.slice(0,4).map(x=>`<div class="row sp"><span>${esc(x.v)} · ${esc(x.n)}</span><span class="mu">${esc(x.dl)}</span></div>`).join('')||'<p class="mu">Geen open taken.</p>'}</div></div>`},
 rooster(){const m=new Date();m.setDate(m.getDate()-((m.getDay()+6)%7)+W*7);let days='';
- for(let i=0;i<7;i++){const d=new Date(m);d.setDate(m.getDate()+i);const ls=on(d);if(i>4&&!ls.length)continue;days+=`<div class="card"><b>${DL[d.getDay()]} ${d.getDate()} ${MN[d.getMonth()]}</b>${ls.map(lessonHTML).join('')||'<p class="mu">Geen lessen</p>'}</div>`}
- return `<h1>Rooster</h1><div class="row"><button class="b g" onclick="W--;R()">←</button><button class="b g" onclick="W=0;R()">Deze week</button><button class="b g" onclick="W++;R()">→</button><button class="b" onclick="exportICS()">Exporteer naar agenda (.ics)</button></div>${msg?`<div class="card">${esc(msg)}</div>`:''}<div class="week">${days}</div>
+ for(let i=0;i<7;i++){const d=new Date(m);d.setDate(m.getDate()+i);const ls=on(d);if(i>4&&!ls.length)continue;days+=`<div class="card"><b>${DL[d.getDay()]} ${d.getDate()} ${MN[d.getMonth()]}</b>${ls.map(lessonHTML).join('')||'<p class="mu">Geen lessen</p>'}${tasksOn(d)}</div>`}
+ return `<h1>Rooster</h1><div class="row"><button class="b g" onclick="W--;R()">←</button><button class="b g" onclick="W=0;R()">Deze week</button><button class="b g" onclick="W++;R()">→</button><button class="b ${rv==='week'?'':'g'}" onclick="rv='week';R()">Week</button><button class="b ${rv==='dag'?'':'g'}" onclick="rv='dag';R()">Dag</button><button class="b g" onclick="exportICS()">Exporteer naar agenda (.ics)</button></div>${msg?`<div class="card">${esc(msg)}</div>`:''}${rv==='dag'?dayTL():'<div class="week">'+days+'</div>'}
  <div class="card"><h3>Somtoday-agendalink koppelen</h3><p class="mu">Plak hier de iCalender-link uit Somtoday (Agenda → Mijn instellingen). Je rooster wordt dan automatisch bijgewerkt. Zie de link als een wachtwoord en deel hem met niemand.</p><div class="row"><input id="il" type="password" placeholder="Plak hier je agendalink" value="${esc(S.link||'')}"><button class="b" onclick="if($('il'))syncLink($('il'))">Koppelen en ophalen</button>${S.link?`<button class="b g" onclick="S.link='';S.l=S.l.filter(x=>x.src!=='ical');save();R()">Ontkoppelen</button>`:''}</div>${S.sync?`<p class="mu">Laatst bijgewerkt: ${new Date(S.sync).toLocaleString('nl-NL')}</p>`:''}</div><div class="card"><b>Rooster plakken</b><p class="mu">Kopieer je rooster uit Somtoday en plak het hier. Per regel een tijd zoals 08:30–09:20, met een datum (10-11 of 10 november) of dag (maandag), bijvoorbeeld “Maandag 08:30-09:20 Wiskunde”. Een regel met alleen de dag of datum geldt voor de regels eronder. Weet je niet zeker of het lukt? Probeer het uit, het aantal herkende lessen zie je meteen.</p><textarea id="pt"></textarea><div class="row"><button class="b" onclick="msg='Herkend: '+parseText($('pt'))+' lessen.';save();R()">Importeer</button></div></div>
  <div class="card"><b>Agenda-bestand importeren (.ics)</b><p class="mu">Uit Google Agenda, Apple Agenda of Somtoday, als daar een export of agenda-link voor is.</p><input type="file" accept=".ics" onchange="this.files[0].text().then(t=>{msg='Geïmporteerd: '+parseICS(t)+' lessen.';save();R()})"></div>
  <div class="card"><b>Les toevoegen</b><div class="row"><input id="ld" type="date"><input id="ls" type="time"><input id="le" type="time"><input id="lt" placeholder="Vak"><input id="lr" placeholder="Lokaal" size="6"><button class="b" onclick="if($('ld')&&$('ls')&&$('lt')){S.l.push({id:uid(),date:$('ld'),dow:null,s:$('ls'),e:$('le'),t:$('lt'),r:$('lr')});save();R()}">Toevoegen</button></div><button class="b g" onclick="if(confirm('Alle lessen verwijderen?')){S.l=[];msg='';save();R()}">Alle lessen wissen</button></div>`},
@@ -136,13 +142,13 @@ over(){return `<h1>Over SomGo</h1>${acct()}<div class="card"><div class="big">So
 function nf(){const q=($('nq')||'').toLowerCase();document.getElementById('nl').innerHTML=S.n.filter(x=>(x.v+x.t).toLowerCase().includes(q)).map(x=>`<div class="card"><div class="row sp"><b>${esc(x.v||'Algemeen')}</b><button class="b g" onclick="del('n','${x.id}')">✕</button></div><div style="white-space:pre-wrap">${esc(x.t)}</div></div>`).join('')}
 function ans(ok){const L=S.c.find(x=>x.id===cur),cd=L.k.filter(c=>c.due<=Date.now()).sort((a,b)=>a.due-b.due)[0],ST=[0,1,2,4,8,16];cd.b=ok?Math.min(cd.b+1,5):0;cd.due=Date.now()+ST[cd.b]*864e5+(ok?0:6e4);flip=false;save();R()}
 function R(){if(gate())return;document.getElementById('nav').innerHTML='<div class="logo"><i></i>SomGo</div>'+TABS.map(([k,t])=>`<button class="${tab===k?'on':''}" onclick="tab='${k}';R()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IC[k]}</svg><span>${t}</span></button>`).join('');
- document.getElementById('v').innerHTML=ibar()+V[tab]()+'<p class="credit">SomGo · Gemaakt door Lennox &amp; Teun.</p>';if(tab==='notities')nf();window.scrollTo(0,0)}
+ document.getElementById('v').innerHTML=ibar()+V[tab]()+'<p class="credit">SomGo · Gemaakt door Lennox &amp; Teun. · <a href="/privacy.html" style="color:inherit">Privacy</a> · <a href="/voorwaarden.html" style="color:inherit">Voorwaarden</a></p>';if(tab==='notities')nf();window.scrollTo(0,0)}
 const CFG=window.SOMGO||{};let SB=null,USER=null,ready=false,authMode='login',amsg='',cst='',ct=null,dirty=false;
 try{if(CFG.url&&CFG.key&&window.supabase)SB=supabase.createClient(CFG.url,CFG.key)}catch(e){}
 const EMPTY=()=>({l:[],g:[],t:[],c:[],n:[]});
 function gate(){const n=document.getElementById('nav'),v=document.getElementById('v');
  if(SB&&!ready){n.style.display='none';v.innerHTML='<p class="mu">Laden…</p>';return true}
- if(SB&&(!USER||authMode==='newpw')){n.style.display='none';v.innerHTML=ibar()+authView();return true}
+ if(SB&&(!USER||authMode==='newpw')){n.style.display='none';v.innerHTML=ibar()+authView()+legal();return true}
  n.style.display='';return false}
 function authView(){const m=authMode,T={login:'Inloggen',signup:'Account maken',reset:'Wachtwoord herstellen',newpw:'Nieuw wachtwoord'}[m],B={login:'Inloggen',signup:'Account maken',reset:'Stuur herstellink',newpw:'Opslaan'}[m];
  const lk=(x,t)=>`<a href="#" style="color:var(--ac)" onclick="authMode='${x}';amsg='';R();return false">${t}</a>`;
@@ -194,6 +200,45 @@ function ibar(){let h='';try{h=localStorage.getItem('somgo:ib')}catch(e){}if(sta
  else if(ios)t='Download SomGo als app: tik op Deel (vierkantje met pijl) en kies “Zet op beginscherm”.';
  else t='Download SomGo als app: open deze website in Chrome of Edge en kies “Installeren” in de adresbalk.';
  return `<div class="ib"><span>${t}</span><div>${b}<button class="b x" onclick="hideIb()" aria-label="Sluiten">✕</button></div></div>`}
+const mins=t=>{const m=String(t||'0:0').split(':');return +m[0]*60+ +m[1]};
+let rv='week',DD=0,T=null;
+function tasksOn(d){return S.t.filter(x=>x.dl===iso(d)&&!x.d).map(x=>`<div class="les" style="--h:35"><div class="ld"><b>📌 ${esc(x.n)}</b><span class="mu">${esc(x.v)} · deadline</span></div></div>`).join('')}
+function dayTL(){const d=new Date();d.setDate(d.getDate()+DD);const ls=on(d);let a=480,b=1020;ls.forEach(x=>{a=Math.min(a,Math.floor(mins(x.s)/60)*60);b=Math.max(b,Math.ceil(mins(x.e||x.s)/60)*60)});const H=(b-a)/60;let g='';
+ for(let i=0;i<=H;i++)g+=`<div class="hr" style="top:${i*56}px"><span>${p(a/60+i)}:00</span></div>`;
+ const bl=ls.map(x=>`<div class="tb" style="--h:${hu(x.t)};top:${(mins(x.s)-a)*56/60}px;height:${Math.max(28,(mins(x.e||x.s)-mins(x.s))*56/60)}px"><b>${esc(x.t)}</b><span>${esc(x.s)}–${esc(x.e)} ${esc(x.r)}</span></div>`).join('');
+ return `<div class="card"><div class="row sp"><button class="b g" onclick="DD--;R()">←</button><b>${DL[d.getDay()]} ${d.getDate()} ${MN[d.getMonth()]}</b><button class="b g" onclick="DD++;R()">→</button></div><div class="tl" style="height:${H*56}px">${g}${bl}</div>${tasksOn(d)}</div>`}
+function gradeChart(){if(S.g.length<2)return'';const pts=S.g.map((_,i)=>avg(S.g.slice(0,i+1))),W=300,Hh=100,x=i=>10+i*(W-20)/(pts.length-1),y=v=>Hh-10-(v-1)*(Hh-20)/9;
+ return `<div class="card"><h3>Ontwikkeling gemiddelde</h3><svg viewBox="0 0 ${W} ${Hh}" style="width:100%;height:auto"><line x1="10" x2="${W-10}" y1="${y(5.5)}" y2="${y(5.5)}" stroke="#ef4444" stroke-dasharray="3" opacity=".5"/><polyline points="${pts.map((v,i)=>x(i)+','+y(v)).join(' ')}" fill="none" stroke="#5b4be0" stroke-width="2.5" stroke-linejoin="round"/>${pts.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="3" fill="#5b4be0"/>`).join('')}</svg><div class="mu">Gestippelde lijn = 5,5. Op volgorde van invoer.</div></div>`}
+const _cij=V.cijfers;V.cijfers=()=>_cij().replace('<h1>Cijfers</h1>','<h1>Cijfers</h1>'+gradeChart());
+V.aanw=()=>{S.a=S.a||[];const ty=['Te laat','Afwezig (geoorloofd)','Afwezig (ongeoorloofd)','Verlof','Ziek'];
+ return `<h1>Aanwezigheid</h1><div class="card mu">Dit is je eigen administratie. De officiële registratie staat in Somtoday en kun je hier niet wijzigen.</div><div class="grid">${ty.map(t=>`<div class="card"><div class="mu">${t}</div><div class="big">${S.a.filter(x=>x.t===t).length}</div></div>`).join('')}</div>
+ <div class="card row"><input id="ad" type="date" value="${iso(new Date())}"><select id="at">${ty.map(t=>`<option>${t}</option>`).join('')}</select><input id="ao" placeholder="Vak of opmerking"><button class="b" onclick="if($('ad')){S.a.push({id:uid(),d:$('ad'),t:$('at'),n:$('ao')});save();R()}">Toevoegen</button></div>
+ <div class="card">${[...S.a].sort((a,b)=>b.d.localeCompare(a.d)).map(x=>`<div class="row sp"><span>${esc(x.d)} · <b>${esc(x.t)}</b> <span class="mu">${esc(x.n)}</span></span><button class="b g x" onclick="del('a','${x.id}')">✕</button></div>`).join('')||'<span class="mu">Nog niets genoteerd.</span>'}</div>`};
+const norm=s=>String(s).toLowerCase().replace(/[^\p{L}\p{N} ]/gu,'').replace(/\s+/g,' ').trim();
+const fo=()=>setTimeout(()=>{const e=document.getElementById('ta');if(e&&!e.disabled)e.focus()},0);
+function tStart(){const L=S.c.find(x=>x.id===$('tl'));if(!L||L.k.length<2){alert('Kies een lijst met minstens 2 kaarten.');return}const m=$('tm'),n=Math.min(+$('tn')||10,L.k.length);
+ T={L,q:[...L.k].sort(()=>Math.random()-.5).slice(0,n),i:0,ok:0,wrong:[],type:m.startsWith('mc')?'mc':'typ',rev:m.endsWith('r'),opts:{},fb:null,t0:Date.now()};R();fo()}
+function tq(){const c=T.q[T.i];return{c,p0:T.rev?c.a:c.q,ans:T.rev?c.q:c.a}}
+function tAns(v){if(T.fb)return;const{c,ans}=tq(),ok=T.type==='mc'?v===ans:norm(v)===norm(ans);T.fb={ok,ans,v};if(ok)T.ok++;else{T.wrong.push(c);c.b=0;c.due=0}save();R()}
+function tNext(){T.fb=null;T.i++;R();fo()}
+function tRetry(){T={...T,q:[...T.wrong],i:0,ok:0,wrong:[],opts:{},fb:null,t0:Date.now()};R();fo()}
+setInterval(()=>{const e=document.getElementById('tt');if(e&&T)e.textContent=Math.floor((Date.now()-T.t0)/1000)+' s'},1000);
+V.toets=()=>{
+ if(!T)return `<h1>Oefentoetsen</h1><div class="card mu">Oefentoetsen maak je zelf van je leerlijsten. Het zijn geen echte schooltoetsen.</div><div class="card"><div class="row"><select id="tl">${S.c.map(x=>`<option value="${x.id}">${esc(x.n)} (${x.k.length})</option>`).join('')}</select><select id="tm"><option value="mc">Meerkeuze</option><option value="typ">Typ het antwoord</option><option value="mcr">Meerkeuze, omgekeerd</option><option value="typr">Typen, omgekeerd</option></select><input id="tn" type="number" value="10" min="2" max="50" style="max-width:90px"><button class="b" onclick="tStart()">Start toets</button></div>${S.c.length?'':'<p class="mu">Maak eerst een lijst bij Leren.</p>'}</div>`;
+ if(T.i>=T.q.length){const sec=Math.round((Date.now()-T.t0)/1000);return `<h1>Resultaat</h1><div class="card hero"><div class="big">${T.ok} / ${T.q.length}</div><div>${Math.round(100*T.ok/T.q.length)}% · ${Math.floor(sec/60)} min ${sec%60} s</div></div><div class="card"><h3>Foutenoverzicht</h3>${T.wrong.map(c=>`<div class="row sp"><span>${esc(T.rev?c.a:c.q)}</span><b>${esc(T.rev?c.q:c.a)}</b></div>`).join('')||'<span class="mu">Alles goed! 🎉</span>'}<p class="mu">Foute begrippen komen sneller terug bij Leren.</p></div><div class="row">${T.wrong.length?'<button class="b" onclick="tRetry()">Oefen fouten opnieuw</button>':''}<button class="b g" onclick="T=null;R()">Nieuwe toets</button></div>`}
+ const{c,p0,ans}=tq(),f=T.fb;let body;
+ if(T.type==='mc'){if(!T.opts[T.i]){const pool=T.L.k.filter(x=>x!==c).map(x=>T.rev?x.q:x.a).filter(o=>o!==ans).sort(()=>Math.random()-.5).slice(0,3);T.opts[T.i]=[ans,...pool].sort(()=>Math.random()-.5)}
+  body=T.opts[T.i].map((o,j)=>`<div class="row"><button class="b g" style="width:100%;text-align:left" ${f?'disabled':''} onclick="tAns(T.opts[T.i][${j}])">${esc(o)}</button></div>`).join('')}
+ else body=`<div class="row"><input id="ta" ${f?'disabled':''} placeholder="Typ je antwoord" value="${f?esc(f.v):''}" onkeydown="if(event.key==='Enter')tAns(this.value)"><button class="b" ${f?'disabled':''} onclick="tAns($('ta'))">Controleer</button></div>`;
+ return `<div class="row sp"><span class="mu">Vraag ${T.i+1} van ${T.q.length} · <span id="tt">0 s</span></span><button class="b g" onclick="T=null;R()">Stop</button></div><div class="card"><div class="big" style="margin-bottom:14px">${esc(p0)}</div>${body}${f?`<p>${f.ok?'✅ Goed!':'❌ Fout. Het antwoord is: <b>'+esc(f.ans)+'</b>'}</p><button class="b" onclick="tNext()">${T.i+1>=T.q.length?'Resultaat':'Volgende'}</button>`:''}</div>`};
+function applyTheme(){let t='auto';try{t=localStorage.getItem('somgo:theme')||'auto'}catch(e){}if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.dataset.theme=t}
+function setTheme(t){try{localStorage.setItem('somgo:theme',t)}catch(e){}applyTheme();R()}
+const legal=()=>'<p class="credit"><a href="/privacy.html" style="color:inherit">Privacy</a> · <a href="/voorwaarden.html" style="color:inherit">Voorwaarden</a></p>';
+const _over=V.over;V.over=()=>_over()+`<div class="card"><h3>Weergave</h3><div class="row"><button class="b g" onclick="setTheme('auto')">Automatisch</button><button class="b g" onclick="setTheme('light')">Licht</button><button class="b g" onclick="setTheme('dark')">Donker</button></div></div><div class="card"><h3>Juridisch</h3><p><a href="/privacy.html">Privacyverklaring</a><br><a href="/voorwaarden.html">Gebruiksvoorwaarden</a></p></div>`;
+Object.assign(IC,{aanw:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',toets:'<path d="M9 3h6v4H9zM6 5h12v16H6z"/><path d="m9 14 2 2 4-4"/>'});
+TABS.splice(4,0,['aanw','Aanwezig']);TABS.splice(6,0,['toets','Toetsen']);
+applyTheme();
+
 boot();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
 </script></body></html>

@@ -66,6 +66,18 @@ nav{overflow-y:auto}
 .tb{position:absolute;left:8px;right:0;border-left:4px solid hsl(var(--h) 70% 55%);background:hsl(var(--h) 80% 60% / .18);border-radius:10px;padding:4px 8px;overflow:hidden;font-size:13px}.tb span{display:block;font-size:11px;color:var(--mu)}
 nav::-webkit-scrollbar{display:none}
 @media(max-width:700px){nav{overflow-x:auto;justify-content:flex-start}nav button{flex:0 0 auto;min-width:72px}}
+.top{margin-bottom:12px;flex-wrap:nowrap}.gs{flex:1;min-width:0}.top .b{white-space:nowrap}
+.pills{display:flex;gap:8px;overflow-x:auto;margin-bottom:14px}.pills::-webkit-scrollbar{display:none}
+.pill{all:unset;cursor:pointer;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--bd);color:var(--mu);font-size:14px;white-space:nowrap}.pill.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+#fab{position:fixed;right:24px;bottom:24px;width:56px;height:56px;border-radius:50%;border:0;background:linear-gradient(135deg,#5b4be0,#7c3aed);color:#fff;font-size:30px;line-height:1;box-shadow:0 8px 24px #5b4be066;cursor:pointer;z-index:15}
+.ov{position:fixed;inset:0;background:#0008;z-index:30;display:flex;align-items:center;justify-content:center;padding:16px}.sheet{width:100%;max-width:480px;margin:0}
+@media(max-width:700px){#fab{bottom:calc(80px + env(safe-area-inset-bottom,0px));right:16px}.ov{align-items:flex-end;padding:0}.sheet{border-radius:20px 20px 0 0}nav{justify-content:space-around}nav button{flex:1 1 0;min-width:0}.top .b{font-size:0;padding:10px 12px}.top .b::before{content:"⚙";font-size:18px}}
+body{background:radial-gradient(900px 420px at 90% -8%,#7c3aed22,transparent 60%),radial-gradient(700px 380px at -5% 105%,#3b82f61a,transparent 60%),var(--bg);background-attachment:fixed}
+h1{font-weight:750;letter-spacing:-.025em}.big{font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+@media(hover:hover){.card{transition:transform .15s,box-shadow .15s}.card:hover{transform:translateY(-1px);box-shadow:0 10px 30px #1a1c4a1a}}
+.bar{height:8px;border-radius:99px;background:var(--bd);overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#5b4be0,#8b5cf6);border-radius:99px;transition:width .3s}
+.mem{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:12px}.tile{min-height:84px;border-radius:14px;border:1px solid var(--bd);background:var(--card);display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-size:14px;cursor:pointer;user-select:none}.tile.up{background:#5b4be022;border-color:var(--ac)}.tile.ok{background:#10b98122;border-color:#10b981}
+.grid .card .big{margin-top:2px}.card h3{letter-spacing:-.01em}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.min.js"></script><script src="/config.js"></script></head><body>
 <nav id="nav"></nav><main id="v"></main>
 <script>
@@ -141,12 +153,12 @@ notities(){return `<h1>Notities</h1><input id="nq" placeholder="Zoeken…" oninp
 over(){return `<h1>Over SomGo</h1>${acct()}<div class="card"><div class="big">SomGo</div><p>De slimme schoolomgeving.</p><p class="mu">Makers: Lennox &amp; Teun · Versie 0.2.0 · Status: Prototype</p></div><div class="card"><b>Privacy</b><p class="mu">Met een account worden je gegevens op de SomGo-server opgeslagen; andere gebruikers kunnen ze niet zien. Je agendalink blijft op dit apparaat. Alleen als je een agendalink koppelt, stuurt de pagina die link naar de SomGo-server om het rooster op te halen. De link wordt daar niet opgeslagen. Somtoday en StudyGo zijn niet gekoppeld: gegevens komen uit plakken, bestanden of handmatige invoer.</p></div><div class="card"><b>Nog niet beschikbaar</b><p class="mu">Accounts, AI-assistent, studieplanner, oefentoetsen, aanwezigheid, boekenbibliotheek, notificaties en delen.</p></div>`}};
 function nf(){const q=($('nq')||'').toLowerCase();document.getElementById('nl').innerHTML=S.n.filter(x=>(x.v+x.t).toLowerCase().includes(q)).map(x=>`<div class="card"><div class="row sp"><b>${esc(x.v||'Algemeen')}</b><button class="b g" onclick="del('n','${x.id}')">✕</button></div><div style="white-space:pre-wrap">${esc(x.t)}</div></div>`).join('')}
 function ans(ok){stAdd('cards',1);const L=S.c.find(x=>x.id===cur),cd=L.k.filter(c=>c.due<=Date.now()).sort((a,b)=>a.due-b.due)[0],ST=[0,1,2,4,8,16];cd.b=ok?Math.min(cd.b+1,5):0;cd.due=Date.now()+ST[cd.b]*864e5+(ok?0:6e4);flip=false;save();R()}
-function R(){if(gate())return;document.getElementById('nav').innerHTML='<div class="logo"><i></i>SomGo</div>'+TABS.map(([k,t])=>`<button class="${tab===k?'on':''}" onclick="tab='${k}';R()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IC[k]}</svg><span>${t}</span></button>`).join('');
- document.getElementById('v').innerHTML=ibar()+V[tab]()+'<p class="credit">SomGo · Gemaakt door Lennox &amp; Teun. · <a href="/privacy.html" style="color:inherit">Privacy</a> · <a href="/voorwaarden.html" style="color:inherit">Voorwaarden</a></p>';if(tab==='notities')nf();window.scrollTo(0,0)}
+function R(){if(gate())return;document.getElementById('nav').innerHTML='<div class="logo"><i></i>SomGo</div>'+TABS.map(([k,t])=>`<button class="${grp(tab)===k?'on':''}" onclick="tab='${k}';R()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IC[k]}</svg><span>${t}</span></button>`).join('');
+ document.getElementById('v').innerHTML=ibar()+topbar()+V[tab]()+'<p class="credit">SomGo · Gemaakt door Lennox &amp; Teun. · <a href="/privacy.html" style="color:inherit">Privacy</a> · <a href="/voorwaarden.html" style="color:inherit">Voorwaarden</a></p>';if(tab==='notities')nf();window.scrollTo(0,0)}
 const CFG=window.SOMGO||{};let SB=null,USER=null,ready=false,authMode='login',amsg='',cst='',ct=null,dirty=false;
 try{if(CFG.url&&CFG.key&&window.supabase)SB=supabase.createClient(CFG.url,CFG.key)}catch(e){}
 const EMPTY=()=>({l:[],g:[],t:[],c:[],n:[]});
-function gate(){const n=document.getElementById('nav'),v=document.getElementById('v');
+function gate(){const fb=document.getElementById('fab');if(fb)fb.style.display=(SB&&(!ready||!USER||authMode==='newpw'))?'none':'';const n=document.getElementById('nav'),v=document.getElementById('v');
  if(SB&&!ready){n.style.display='none';v.innerHTML='<p class="mu">Laden…</p>';return true}
  if(SB&&(!USER||authMode==='newpw')){n.style.display='none';v.innerHTML=ibar()+authView()+legal();return true}
  n.style.display='';return false}
@@ -274,6 +286,84 @@ function importData(f){if(!f)return;f.text().then(t=>{try{const j=JSON.parse(t),
 const _over2=V.over;V.over=()=>_over2()+`<div class="card"><h3>Back-up terugzetten</h3><p class="mu">Kies een bestand dat je eerder hebt gedownload met “Mijn gegevens downloaden”. Je huidige gegevens worden vervangen.</p><input type="file" accept=".json" onchange="importData(this.files[0])"></div>`;
 Object.assign(IC,{plan:'<rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/>',vg:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>'});
 TABS.splice(4,0,['plan','Planner']);TABS.splice(8,0,['vg','Voortgang']);
+const GR={school:['cijfers','huiswerk','aanw'],leren:['leren','toets','spel','plan','vg']};
+const SUBN={cijfers:'Cijfers',huiswerk:'Huiswerk',aanw:'Aanwezigheid',leren:'Lijsten',toets:'Toetsen',spel:'Spel',plan:'Planner',vg:'Voortgang'};
+const grp=t=>GR.school.includes(t)?'cijfers':GR.leren.includes(t)?'leren':t;
+TABS.length=0;TABS.push(['dash','Dashboard'],['rooster','Rooster'],['cijfers','School'],['leren','Leren'],['notities','Notities']);
+let sq='',vk='',vkBack='dash';
+const unesc=s=>s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&amp;/g,'&');
+const allVak=()=>[...new Set([...S.g,...S.t,...S.n,...(S.x||[]),...S.l.filter(l=>l.t.length<=20).map(l=>({v:l.t}))].map(x=>(x.v||'').trim()).filter(Boolean))].sort();
+function vkOpen(n){vk=n;if(tab!=='vak')vkBack=tab;tab='vak';R()}
+function topbar(){const g=GR.school.includes(tab)?GR.school:GR.leren.includes(tab)?GR.leren:null;
+ return `<div class="row top"><input id="gs" class="gs" placeholder="Zoeken in alles… (Enter)" value="${esc(sq)}" onkeydown="if(event.key==='Enter'){sq=this.value;tab='zoek';R()}"><button class="b g" onclick="tab='over';R()" aria-label="Instellingen">⚙ Instellingen</button></div>${g?`<div class="pills">${g.map(k=>`<button class="pill ${tab===k?'on':''}" onclick="tab='${k}';R()">${SUBN[k]}</button>`).join('')}</div>`:''}`}
+const _cij2=V.cijfers;V.cijfers=()=>_cij2().replace(/<div class="row sp"><b>([^<]*)<\/b><b>/g,(m,a)=>`<div class="row sp"><b style="cursor:pointer;color:var(--ac)" onclick="vkOpen(decodeURIComponent('${encodeURIComponent(unesc(a)).replace(/'/g,'%27')}'))">${a} ›</b><b>`);
+const _de=dashExtra;dashExtra=()=>{const v=allVak();return _de()+(v.length?`<div class="card"><h3>Vakken</h3><div class="pills" style="flex-wrap:wrap">${v.map(x=>`<button class="pill" onclick="vkOpen(decodeURIComponent('${encodeURIComponent(x).replace(/'/g,'%27')}'))">${esc(x)}</button>`).join('')}</div></div>`:'')};
+V.vak=()=>{const v=vk,g=S.g.filter(x=>x.v===v),t=S.t.filter(x=>x.v===v),n=S.n.filter(x=>x.v===v),xs=(S.x||[]).filter(e=>e.v===v&&e.d>=iso(new Date())).sort((a,b)=>a.d.localeCompare(b.d)),l=S.c.filter(c=>c.n.toLowerCase().includes(v.toLowerCase())),a=avg(g),bx=(h,b)=>b?`<div class="card"><h3>${h}</h3>${b}</div>`:'';
+ return `<button class="b g" onclick="tab='${vkBack}';R()">← Terug</button><h1 style="margin-top:12px">${esc(v)}</h1><div class="grid"><div class="card"><div class="mu">Gemiddelde</div><div class="big">${a?a.toFixed(1):'–'}</div></div><div class="card"><div class="mu">Open taken</div><div class="big">${t.filter(y=>!y.d).length}</div></div><div class="card"><div class="mu">Volgende toets</div><b>${xs[0]?esc(xs[0].d):'–'}</b><div class="mu">${xs[0]?esc(xs[0].n):''}</div></div></div>`
+ +bx('Cijfers',g.map(x=>`<div class="row sp"><span>${esc(x.n)} <span class="mu">×${x.w}</span></span><b>${x.c}</b></div>`).join(''))
+ +bx('Huiswerk',t.map(x=>`<div class="row sp"><span class="${x.d?'done':''}">${esc(x.n)}</span><span class="mu">${esc(x.dl)}</span></div>`).join(''))
+ +bx('Notities',n.map(x=>`<div style="white-space:pre-wrap;margin-bottom:8px">${esc(x.t)}</div>`).join(''))
+ +bx('Leerlijsten met deze vaknaam',l.map(x=>`<div class="row sp"><span>${esc(x.n)}</span><button class="b" onclick="cur='${x.id}';flip=false;tab='leren';R()">Oefenen</button></div>`).join(''))
+ +(g.length+t.length+n.length+l.length?'':'<p class="mu">Nog niets bij dit vak. Gebruik de +-knop om iets toe te voegen.</p>')};
+V.zoek=()=>{const q=sq.toLowerCase().trim();if(!q)return'<h1>Zoeken</h1><p class="mu">Typ iets in de zoekbalk en druk op Enter.</p>';
+ const m=s=>String(s||'').toLowerCase().includes(q),sec=(t,i)=>i.length?`<div class="card"><h3>${t}</h3>${i.slice(0,8).join('')}</div>`:'',row=(a,b,go)=>`<div class="row sp" style="cursor:pointer" onclick="${go}"><span>${esc(a)}</span><span class="mu">${esc(b)}</span></div>`;
+ const h=sec('Huiswerk',S.t.filter(x=>m(x.n)||m(x.v)).map(x=>row(x.n,x.v+' · '+(x.dl||''),"tab='huiswerk';R()")))+sec('Notities',S.n.filter(x=>m(x.t)||m(x.v)).map(x=>row(x.t.slice(0,60),x.v||'',"tab='notities';R()")))+sec('Begrippen',S.c.flatMap(l=>l.k.filter(c=>m(c.q)||m(c.a)).map(c=>row(c.q+' — '+c.a,l.n,`cur='${l.id}';flip=false;tab='leren';R()`))))+sec('Cijfers',S.g.filter(x=>m(x.n)||m(x.v)).map(x=>row(x.v+' · '+x.n,String(x.c),"tab='cijfers';R()")))+sec('Toetsen',(S.x||[]).filter(x=>m(x.v)||m(x.n)).map(x=>row(x.v+' '+x.n,x.d,"tab='plan';R()")));
+ return `<h1>Zoeken: “${esc(sq)}”</h1>${h||'<p class="mu">Niets gevonden.</p>'}`};
+const QF={t:'Huiswerk',g:'Cijfer',n:'Notitie',x:'Toets'};
+function qaX(){const o=document.getElementById('qa');if(o)o.innerHTML=''}
+function qa(type){let o=document.getElementById('qa');if(!o){o=document.createElement('div');o.id='qa';document.body.appendChild(o)}
+ const wrap=b=>`<div class="ov" onclick="qaX()"><div class="card sheet" onclick="event.stopPropagation()">${b}</div></div>`;
+ if(!type){o.innerHTML=wrap(`<h3>Snel toevoegen</h3><div class="row">${Object.keys(QF).map(k=>`<button class="b g" onclick="qa('${k}')">${QF[k]}</button>`).join('')}</div>`);return}
+ const vl=`<input id="qv" list="vl" placeholder="Vak"><datalist id="vl">${allVak().map(v=>`<option value="${esc(v)}">`).join('')}</datalist>`;
+ const f={t:vl+'<input id="qn" placeholder="Taak"><input id="qd" type="date">',g:vl+'<input id="qn" placeholder="Toets"><input id="qc" placeholder="Cijfer" size="5"><input id="qw" placeholder="Weging" size="5" value="1">',n:vl+'<textarea id="qt" placeholder="Notitie"></textarea>',x:vl+'<input id="qd" type="date"><input id="qn" placeholder="Stof">'}[type];
+ o.innerHTML=wrap(`<h3>${QF[type]} toevoegen</h3><div class="row">${f}</div><div class="row"><button class="b" onclick="qs('${type}')">Opslaan</button><button class="b g" onclick="qaX()">Annuleren</button></div>`)}
+function qs(t){const g=i=>(document.getElementById(i)||{}).value||'',v=g('qv').trim(),id=uid();
+ if(t==='t'){if(!g('qn'))return;S.t.push({id,v,n:g('qn'),dl:g('qd'),d:false})}
+ else if(t==='g'){const c=parseFloat(g('qc').replace(',','.'));if(!v||isNaN(c))return;S.g.push({id,v,n:g('qn'),c,w:+g('qw')||1})}
+ else if(t==='n'){if(!g('qt'))return;S.n.unshift({id,v,t:g('qt')})}
+ else{if(!v||!g('qd'))return;(S.x=S.x||[]).push({id,v,d:g('qd'),n:g('qn')})}
+ save();qaX();R()}
+{const fb=document.createElement('button');fb.id='fab';fb.textContent='+';fb.setAttribute('aria-label','Snel toevoegen');fb.onclick=()=>qa();document.body.appendChild(fb)}
+const shuf=a=>[...a].sort(()=>Math.random()-.5);
+let G=null,otpEm='';
+function gStart(k){gRun(k,S.c.find(x=>x.id===$('gl')))}
+function gRun(kind,L){const need=kind==='mem'?4:3;if(!L||L.k.length<need){alert('Kies een lijst met minstens '+need+' begrippen.');return}
+ if(kind==='blitz'){G={kind,L,end:Date.now()+6e4,score:0,combo:0,lives:3,ok:0,n:0,c:null,opts:[],fb:null,over:false};gNext()}
+ else{const ps=shuf(L.k).slice(0,6);G={kind,L,t:shuf(ps.flatMap((c,i)=>[{p:i,s:c.q},{p:i,s:c.a}])).map(x=>({...x,st:0})),sel:[],moves:0,t0:Date.now(),done:false,lock:false}}R()}
+function gNext(){const k=G.L.k,c=k[Math.floor(Math.random()*k.length)];G.c=c;G.opts=shuf([c.a,...shuf(k.filter(x=>x!==c&&x.a!==c.a)).slice(0,3).map(x=>x.a)]);G.fb=null}
+function gAns(i){if(!G||G.fb||G.over)return;const ok=G.opts[i]===G.c.a;G.n++;if(ok){G.ok++;G.combo++;G.score+=10*(1+Math.floor(G.combo/3));stAdd('cards',1)}else{G.combo=0;G.lives--;G.c.b=0;G.c.due=0}G.fb={ok,i};save();R();
+ setTimeout(()=>{if(!G||G.over)return;if(G.lives<=0)gEnd();else{gNext();R()}},ok?350:900)}
+function gEnd(){if(!G||G.over)return;G.over=true;S.hs=S.hs||{};if(G.score>(S.hs[G.L.id]||0)){S.hs[G.L.id]=G.score;G.rec=true}save();R()}
+function gTile(i){const t=G.t[i];if(G.lock||t.st||G.done)return;t.st=1;G.sel.push(i);
+ if(G.sel.length===2){G.moves++;const[a,b]=G.sel.map(j=>G.t[j]);if(a.p===b.p){a.st=b.st=2;G.sel=[];if(G.t.every(x=>x.st===2)){G.done=true;G.sec=Math.round((Date.now()-G.t0)/1e3);stAdd('cards',G.t.length/2)}}
+  else{G.lock=true;setTimeout(()=>{if(!G)return;G.t[G.sel[0]].st=0;G.t[G.sel[1]].st=0;G.sel=[];G.lock=false;R()},800)}}R()}
+setInterval(()=>{if(!G||G.kind!=='blitz'||G.over)return;const r=G.end-Date.now();if(r<=0){gEnd();return}const e=document.getElementById('gt'),b=document.getElementById('gb');if(e)e.textContent=Math.ceil(r/1e3)+' s';if(b)b.style.width=r/600+'%'},250);
+V.spel=()=>{
+ if(!G)return `<h1>Spel</h1><div class="card"><p class="mu">Leer door te spelen met je eigen leerlijsten.</p><div class="row"><select id="gl">${S.c.map(x=>`<option value="${x.id}">${esc(x.n)} (${x.k.length})</option>`).join('')}</select></div><div class="row"><button class="b" onclick="gStart('blitz')">⚡ Blitz (60 s)</button><button class="b g" onclick="gStart('mem')">🧩 Memory</button></div></div><div class="card"><p><b>Blitz:</b> beantwoord zoveel mogelijk begrippen in 60 seconden. Je hebt 3 levens en een reeks goede antwoorden geeft bonuspunten.</p><p><b>Memory:</b> vind de bij elkaar horende begrippen en definities.</p></div>${Object.keys(S.hs||{}).length?`<div class="card"><h3>🏆 Records</h3>${S.c.filter(x=>(S.hs||{})[x.id]).map(x=>`<div class="row sp"><span>${esc(x.n)}</span><b>${S.hs[x.id]}</b></div>`).join('')}</div>`:''}`;
+ if(G.kind==='mem')return G.done?`<h1>Gelukt! 🎉</h1><div class="card hero"><div class="big">${G.moves} zetten</div><div>${G.sec} seconden</div></div><div class="row"><button class="b" onclick="gRun('mem',G.L)">Opnieuw</button><button class="b g" onclick="G=null;R()">Andere lijst</button></div>`:`<div class="row sp"><b>Zetten: ${G.moves}</b><button class="b g" onclick="G=null;R()">Stop</button></div><div class="mem">${G.t.map((t,i)=>`<div class="tile ${t.st===1?'up':t.st===2?'ok':''}" onclick="gTile(${i})">${t.st?esc(t.s):'?'}</div>`).join('')}</div>`;
+ if(G.over)return `<h1>Klaar!</h1><div class="card hero"><div class="big">${G.score} punten</div><div>${G.ok} goed van ${G.n}${G.rec?' · 🏆 nieuw record!':''}</div></div><div class="row"><button class="b" onclick="gRun('blitz',G.L)">Opnieuw</button><button class="b g" onclick="G=null;R()">Andere lijst</button></div>`;
+ return `<div class="row sp"><b>${G.score} pt${G.combo>1?' · 🔥×'+G.combo:''}</b><span>${'♥'.repeat(G.lives)}</span><span id="gt" class="mu">60 s</span><button class="b g" onclick="G=null;R()">Stop</button></div><div class="bar"><i id="gb" style="width:100%"></i></div><div class="card" style="margin-top:14px;text-align:center"><div class="big" style="margin-bottom:14px">${esc(G.c.q)}</div>${G.opts.map((o,i)=>`<div class="row"><button class="b g" style="width:100%;${G.fb?(o===G.c.a?'background:#10b981;color:#fff;':i===G.fb.i?'background:#ef4444;color:#fff;':''):''}" onclick="gAns(${i})">${esc(o)}</button></div>`).join('')}</div>`};
+function xpCard(){const s=S.st||{},sm=o=>Object.values(o||{}).reduce((a,b)=>a+b,0),xp=(sm(s.cards)*2+sm(s.min)+sm(S.hs)/5)|0,lv=Math.floor(Math.sqrt(xp/25))+1,lo=(lv-1)**2*25,hi=lv**2*25;
+ return `<div class="card"><div class="row sp"><b>Level ${lv}</b><span class="mu">${xp} XP</span></div><div class="bar"><i style="width:${Math.min(100,Math.round((xp-lo)*100/(hi-lo)))}%"></i></div><div class="mu" style="margin-top:6px">Verdien XP met kaarten oefenen, focus-tijd en spelletjes.</div></div>`}
+const _de2=dashExtra;dashExtra=()=>xpCard()+_de2();
+const _d3=V.dash;V.dash=()=>{const m=(typeof USER!=='undefined'&&USER&&USER.user_metadata)||{},n=(m.name||m.full_name||'').split(' ')[0];return _d3().replace(/(Goede(?:morgen|middag|avond))<\/h1>/,(a,g)=>g+(n?', '+esc(n):'')+'</h1>')};
+Object.assign(IC,{spel:'<rect x="3" y="7" width="18" height="11" rx="4"/><path d="M8 10v5M5.5 12.5h5"/>'});
+const lk2=(x,t)=>`<a href="#" style="color:var(--ac)" onclick="${x};R();return false">${t}</a>`;
+function codeView(){const v=authMode==='verify';
+ return `<div class="card" style="max-width:420px;margin:8vh auto"><div class="logo" style="padding:0 0 14px;display:flex"><i></i>SomGo</div><h1 style="font-size:22px">${v?'Vul je code in':'Inloggen of account maken'}</h1>
+ ${v?`<p class="mu">We hebben een code gestuurd naar <b>${esc(otpEm)}</b>. Kijk ook in je spam-map.</p><div class="row"><input id="oc" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="Code" style="font-size:22px;letter-spacing:4px;text-align:center" onkeydown="if(event.key==='Enter')doVerify()"></div>`:`<div class="row"><input id="ae" type="email" placeholder="E-mailadres" autocomplete="email" value="${esc(otpEm)}" onkeydown="if(event.key==='Enter')sendCode()"></div><div class="row"><input id="an" placeholder="Naam (alleen voor een nieuw account)" autocomplete="name"></div>`}
+ ${amsg?`<p class="mu">${esc(amsg)}</p>`:''}<div class="row" style="margin-top:10px"><button class="b" onclick="${v?'doVerify()':'sendCode()'}">${v?'Inloggen':'Stuur me een code'}</button></div>
+ ${v?'':'<div class="row"><button class="b g" onclick="google()">Doorgaan met Google</button></div>'}
+ <p class="mu">${v?lk2("authMode='code';amsg=''",'Ander e-mailadres')+' · '+lk2('sendCode(1)','Stuur opnieuw'):lk2("authMode='login';amsg=''",'Inloggen met wachtwoord')}</p>${v?'':'<p class="mu" style="font-size:12px">Door door te gaan ga je akkoord met de <a href="/voorwaarden.html">voorwaarden</a> en de <a href="/privacy.html">privacyverklaring</a>. Jonger dan 16? Vraag toestemming aan een ouder of voogd.</p>'}</div>`}
+async function sendCode(again){const g=i=>(document.getElementById(i)||{}).value||'',em=again?otpEm:g('ae').trim(),nm=g('an').trim();if(!em){amsg='Vul je e-mailadres in.';return R()}
+ try{const{error}=await SB.auth.signInWithOtp({email:em,options:{shouldCreateUser:true,data:nm?{name:nm}:undefined}});if(error)throw error;otpEm=em;authMode='verify';amsg=again?'Nieuwe code verstuurd.':''}catch(e){amsg=e.message||'Versturen mislukt'}R()}
+async function doVerify(){const t=((document.getElementById('oc')||{}).value||'').replace(/\s/g,'');if(!t){amsg='Vul de code in.';return R()}
+ try{const{error}=await SB.auth.verifyOtp({email:otpEm,token:t,type:'email'});if(error)throw error;amsg='';authMode='code'}catch(e){amsg='Code onjuist of verlopen. Vraag een nieuwe aan.'}R()}
+const _av=authView;authView=()=>(authMode==='code'||authMode==='verify')?codeView():_av()+'<p class="mu" style="text-align:center">'+lk2("authMode='code';amsg=''",'Inloggen met een e-mailcode')+'</p>';
+const _lo=logout;logout=async()=>{authMode='code';amsg='';await _lo()};
+authMode='code';
+
+
 
 
 boot();

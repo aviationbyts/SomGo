@@ -158,9 +158,9 @@ function R(){if(gate())return;document.getElementById('nav').innerHTML='<div cla
 const CFG=window.SOMGO||{};let SB=null,USER=null,ready=false,authMode='login',amsg='',cst='',ct=null,dirty=false;
 try{if(CFG.url&&CFG.key&&window.supabase)SB=supabase.createClient(CFG.url,CFG.key)}catch(e){}
 const EMPTY=()=>({l:[],g:[],t:[],c:[],n:[]});
-function gate(){const fb=document.getElementById('fab');if(fb)fb.style.display=(SB&&(!ready||!USER||authMode==='newpw'))?'none':'';const n=document.getElementById('nav'),v=document.getElementById('v');
+function gate(){const fb=document.getElementById('fab');if(fb)fb.style.display=(SB&&(!ready||!USER||authMode==='newpw'||authMode==='setpw'))?'none':'';const n=document.getElementById('nav'),v=document.getElementById('v');
  if(SB&&!ready){n.style.display='none';v.innerHTML='<p class="mu">Laden…</p>';return true}
- if(SB&&(!USER||authMode==='newpw')){n.style.display='none';v.innerHTML=ibar()+authView()+legal();return true}
+ if(SB&&(!USER||authMode==='newpw'||authMode==='setpw')){n.style.display='none';v.innerHTML=ibar()+authView()+legal();return true}
  n.style.display='';return false}
 function authView(){const m=authMode,T={login:'Inloggen',signup:'Account maken',reset:'Wachtwoord herstellen',newpw:'Nieuw wachtwoord'}[m],B={login:'Inloggen',signup:'Account maken',reset:'Stuur herstellink',newpw:'Opslaan'}[m];
  const lk=(x,t)=>`<a href="#" style="color:var(--ac)" onclick="authMode='${x}';amsg='';R();return false">${t}</a>`;
@@ -197,7 +197,7 @@ async function load(){const {data,error}=await SB.from('userdata').select('data'
 function autoSync(){if(S.link&&Date.now()-(S.sync||0)>36e5)syncLink(S.link,true)}
 async function boot(){if(!SB){R();return autoSync()}
  try{const {data}=await SB.auth.getSession();USER=data.session?data.session.user:null}catch(e){}
- SB.auth.onAuthStateChange((ev,s)=>{if(ev==='PASSWORD_RECOVERY'){authMode='newpw';USER=s&&s.user;R();return}const u=s?s.user:null;if((u?u.id:0)!==(USER?USER.id:0)){USER=u;u?load():R()}});
+ SB.auth.onAuthStateChange((ev,s)=>{if(ev==='PASSWORD_RECOVERY'){authMode='newpw';USER=s&&s.user;R();return}if(pend)return;const u=s?s.user:null;if((u?u.id:0)!==(USER?USER.id:0)){USER=u;u?load():R()}});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&USER&&!dirty)load()});
  ready=true;USER?await load():R()}
 
@@ -354,14 +354,42 @@ function codeView(){const v=authMode==='verify';
  ${v?`<p class="mu">We hebben een code gestuurd naar <b>${esc(otpEm)}</b>. Kijk ook in je spam-map.</p><div class="row"><input id="oc" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="Code" style="font-size:22px;letter-spacing:4px;text-align:center" onkeydown="if(event.key==='Enter')doVerify()"></div>`:`<div class="row"><input id="ae" type="email" placeholder="E-mailadres" autocomplete="email" value="${esc(otpEm)}" onkeydown="if(event.key==='Enter')sendCode()"></div><div class="row"><input id="an" placeholder="Naam (alleen voor een nieuw account)" autocomplete="name"></div>`}
  ${amsg?`<p class="mu">${esc(amsg)}</p>`:''}<div class="row" style="margin-top:10px"><button class="b" onclick="${v?'doVerify()':'sendCode()'}">${v?'Inloggen':'Stuur me een code'}</button></div>
  ${v?'':'<div class="row"><button class="b g" onclick="google()">Doorgaan met Google</button></div>'}
- <p class="mu">${v?lk2("authMode='code';amsg=''",'Ander e-mailadres')+' · '+lk2('sendCode(1)','Stuur opnieuw'):lk2("authMode='login';amsg=''",'Inloggen met wachtwoord')}</p>${v?'':'<p class="mu" style="font-size:12px">Door door te gaan ga je akkoord met de <a href="/voorwaarden.html">voorwaarden</a> en de <a href="/privacy.html">privacyverklaring</a>. Jonger dan 16? Vraag toestemming aan een ouder of voogd.</p>'}</div>`}
+ <p class="mu">${v?lk2("authMode='code';amsg=''",'Ander e-mailadres')+' · '+lk2('sendCode(1)','Stuur opnieuw'):''}</p>${v?'':'<p class="mu" style="font-size:12px">Door door te gaan ga je akkoord met de <a href="/voorwaarden.html">voorwaarden</a> en de <a href="/privacy.html">privacyverklaring</a>. Jonger dan 16? Vraag toestemming aan een ouder of voogd.</p>'}</div>`}
 async function sendCode(again){const g=i=>(document.getElementById(i)||{}).value||'',em=again?otpEm:g('ae').trim(),nm=g('an').trim();if(!em){amsg='Vul je e-mailadres in.';return R()}
  try{const{error}=await SB.auth.signInWithOtp({email:em,options:{shouldCreateUser:true,data:nm?{name:nm}:undefined}});if(error)throw error;otpEm=em;authMode='verify';amsg=again?'Nieuwe code verstuurd.':''}catch(e){amsg=e.message||'Versturen mislukt'}R()}
 async function doVerify(){const t=((document.getElementById('oc')||{}).value||'').replace(/\s/g,'');if(!t){amsg='Vul de code in.';return R()}
  try{const{error}=await SB.auth.verifyOtp({email:otpEm,token:t,type:'email'});if(error)throw error;amsg='';authMode='code'}catch(e){amsg='Code onjuist of verlopen. Vraag een nieuwe aan.'}R()}
 const _av=authView;authView=()=>(authMode==='code'||authMode==='verify')?codeView():_av()+'<p class="mu" style="text-align:center">'+lk2("authMode='code';amsg=''",'Inloggen met een e-mailcode')+'</p>';
-const _lo=logout;logout=async()=>{authMode='code';amsg='';await _lo()};
-authMode='code';
+const _lo=logout;logout=async()=>{authMode='login';amsg='';await _lo()};
+authMode='login';
+let otpType='email',recPending=false,pend=false;
+const gv=i=>(document.getElementById(i)||{}).value||'';
+const A=(x,t)=>`<a href="#" style="color:var(--ac)" onclick="authMode='${x}';amsg='';R();return false">${t}</a>`;
+const aCard=(title,body,extra='')=>`<div class="card" style="max-width:420px;margin:8vh auto"><div class="logo" style="padding:0 0 14px;display:flex"><i></i>SomGo</div><h1 style="font-size:22px">${title}</h1>${body}${amsg?`<p class="mu">${esc(amsg)}</p>`:''}${extra}</div>`;
+const inp=(id,ph,type,ac,go)=>`<div class="row"><input id="${id}" type="${type}" placeholder="${ph}" autocomplete="${ac}" value="${id==='ae'?esc(otpEm):''}"${go?` onkeydown="if(event.key==='Enter')${go}"`:''}></div>`;
+const abtn=(t,f)=>`<div class="row" style="margin-top:6px"><button class="b" onclick="${f}">${t}</button></div>`;
+const gbtn='<div class="row"><button class="b g" onclick="google()">Doorgaan met Google</button></div>';
+const terms='<p class="mu" style="font-size:12px">Door een account te maken ga je akkoord met de <a href="/voorwaarden.html">voorwaarden</a> en de <a href="/privacy.html">privacyverklaring</a>. Jonger dan 16? Vraag toestemming aan een ouder of voogd.</p>';
+function authView2(){const m=authMode;
+ if(m==='verify')return aCard('Vul je code in',`<p class="mu">We hebben een code gestuurd naar <b>${esc(otpEm)}</b>. Kijk ook in je spam-map.</p><div class="row"><input id="oc" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="Code" style="font-size:22px;letter-spacing:4px;text-align:center" onkeydown="if(event.key==='Enter')doVerify()"></div>`+abtn('Bevestigen','doVerify()'),`<p class="mu">${A('login','Terug')} · <a href="#" style="color:var(--ac)" onclick="resend();return false">Stuur opnieuw</a></p>`);
+ if(m==='signup')return aCard('Account maken',inp('an','Naam','text','name')+inp('ae','E-mailadres','email','email','doSignup()')+abtn('Stuur me een code','doSignup()')+gbtn,`<p class="mu">Al een account? ${A('login','Inloggen')}</p>`+terms);
+ if(m==='reset')return aCard('Wachtwoord vergeten',inp('ae','E-mailadres','email','email','doReset()')+abtn('Stuur me een code','doReset()'),`<p class="mu">${A('login','Terug')}</p>`);
+ if(m==='setpw'||m==='newpw')return aCard('Maak een wachtwoord','<p class="mu">Kies een wachtwoord van minstens 8 tekens. Dit gebruik je de volgende keer samen met een code uit je mail.</p>'+inp('p1','Wachtwoord','password','new-password')+inp('p2','Herhaal wachtwoord','password','new-password','doSetPw()')+abtn('Opslaan','doSetPw()'));
+ return aCard('Inloggen',inp('ae','E-mailadres','email','email')+inp('ap','Wachtwoord','password','current-password','doLogin()')+abtn('Inloggen','doLogin()')+gbtn,`<p class="mu">${A('signup','Account maken')} · ${A('reset','Wachtwoord vergeten')}</p>`)}
+authView=authView2;
+async function sendOtp(em,data){const{error}=await SB.auth.signInWithOtp({email:em,options:{shouldCreateUser:true,data}});if(error)throw error;otpEm=em;otpType='email';authMode='verify';amsg=''}
+async function doSignup(){const nm=gv('an').trim(),em=gv('ae').trim();otpEm=em;if(!nm||!em){amsg='Vul je naam en e-mailadres in.';return R()}try{await sendOtp(em,{name:nm})}catch(e){amsg=e.message}R()}
+async function doLogin(){const em=gv('ae').trim(),pw=gv('ap');otpEm=em;if(!em||!pw){amsg='Vul je e-mailadres en wachtwoord in.';return R()}
+ pend=true;try{const{error}=await SB.auth.signInWithPassword({email:em,password:pw});if(error)throw error;await SB.auth.signOut({scope:'local'});await new Promise(r=>setTimeout(r,300));USER=null;await sendOtp(em)}
+ catch(e){amsg=/invalid login/i.test(e.message)?'E-mailadres of wachtwoord klopt niet. Nog geen wachtwoord? Kies “Wachtwoord vergeten”.':e.message}finally{pend=false}R()}
+async function doReset(){const em=gv('ae').trim();otpEm=em;if(!em){amsg='Vul je e-mailadres in.';return R()}try{const{error}=await SB.auth.resetPasswordForEmail(em);if(error)throw error;otpEm=em;otpType='recovery';authMode='verify';amsg=''}catch(e){amsg=e.message}R()}
+async function resend(){try{if(otpType==='recovery'){const{error}=await SB.auth.resetPasswordForEmail(otpEm);if(error)throw error}else await sendOtp(otpEm);amsg='Nieuwe code verstuurd.'}catch(e){amsg=e.message}R()}
+async function doVerify(){const t=gv('oc').replace(/\s/g,'');if(!t){amsg='Vul de code in.';return R()}if(otpType==='recovery')recPending=true;
+ try{const{error}=await SB.auth.verifyOtp({email:otpEm,token:t,type:otpType});if(error)throw error;amsg=''}catch(e){recPending=false;amsg='Code onjuist of verlopen. Vraag een nieuwe aan.'}R()}
+function needsPw(){const m=USER.user_metadata||{},p=(USER.app_metadata&&USER.app_metadata.providers)||[];return !m.has_pw&&!p.includes('google')}
+const _load=load;load=async()=>{if(recPending||(USER&&needsPw())){recPending=false;authMode='setpw';R();return}await _load()};
+async function doSetPw(){const a=gv('p1'),b=gv('p2');if(a.length<8){amsg='Minimaal 8 tekens.';return R()}if(a!==b){amsg='De wachtwoorden zijn niet hetzelfde.';return R()}
+ try{const{error}=await SB.auth.updateUser({password:a,data:{has_pw:true}});if(error)throw error;USER.user_metadata=Object.assign({},USER.user_metadata,{has_pw:true});amsg='';authMode='login';await load()}catch(e){amsg=/different/i.test(e.message)?'Kies een ander wachtwoord dan je vorige.':e.message}R()}
 
 
 

@@ -78,6 +78,13 @@ h1{font-weight:750;letter-spacing:-.025em}.big{font-variant-numeric:tabular-nums
 .bar{height:8px;border-radius:99px;background:var(--bd);overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#5b4be0,#8b5cf6);border-radius:99px;transition:width .3s}
 .mem{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:12px}.tile{min-height:84px;border-radius:14px;border:1px solid var(--bd);background:var(--card);display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-size:14px;cursor:pointer;user-select:none}.tile.up{background:#5b4be022;border-color:var(--ac)}.tile.ok{background:#10b98122;border-color:#10b981}
 .grid .card .big{margin-top:2px}.card h3{letter-spacing:-.01em}
+.ib.up{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-left:4px solid var(--ac)}.ib.up .x{background:var(--bd);color:var(--tx)}
+.card.hero,.ib:not(.up),#fab,nav button.on,.logo i{background:linear-gradient(135deg,var(--ac),var(--ac2,#7c3aed))}
+.bar i{background:linear-gradient(90deg,var(--ac),var(--ac2,#8b5cf6))}
+nav button.on{box-shadow:0 6px 16px color-mix(in srgb,var(--ac) 30%,transparent)}
+body.hasbg::before{content:"";position:fixed;inset:0;background:var(--bg);opacity:var(--dim,.55);z-index:-1;pointer-events:none}
+.card,nav{background:color-mix(in srgb,var(--card) calc(var(--ca,100)*1%),transparent)}
+body.hasbg .card,body.hasbg nav{backdrop-filter:blur(10px)}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.min.js"></script><script src="/config.js"></script></head><body>
 <nav id="nav"></nav><main id="v"></main>
 <script>
@@ -288,13 +295,13 @@ Object.assign(IC,{plan:'<rect x="3" y="5" width="18" height="16" rx="2.5"/><path
 TABS.splice(4,0,['plan','Planner']);TABS.splice(8,0,['vg','Voortgang']);
 const GR={school:['cijfers','huiswerk','aanw'],leren:['leren','toets','spel','plan','vg']};
 const SUBN={cijfers:'Cijfers',huiswerk:'Huiswerk',aanw:'Aanwezigheid',leren:'Lijsten',toets:'Toetsen',spel:'Spel',plan:'Planner',vg:'Voortgang'};
-const grp=t=>GR.school.includes(t)?'cijfers':GR.leren.includes(t)?'leren':t;
+const grp=t=>GR.school.includes(t)?'cijfers':GR.leren.includes(t)?'leren':(GR.ai||[]).includes(t)?'ai':t;
 TABS.length=0;TABS.push(['dash','Dashboard'],['rooster','Rooster'],['cijfers','School'],['leren','Leren'],['notities','Notities']);
 let sq='',vk='',vkBack='dash';
 const unesc=s=>s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&amp;/g,'&');
 const allVak=()=>[...new Set([...S.g,...S.t,...S.n,...(S.x||[]),...S.l.filter(l=>l.t.length<=20).map(l=>({v:l.t}))].map(x=>(x.v||'').trim()).filter(Boolean))].sort();
 function vkOpen(n){vk=n;if(tab!=='vak')vkBack=tab;tab='vak';R()}
-function topbar(){const g=GR.school.includes(tab)?GR.school:GR.leren.includes(tab)?GR.leren:null;
+function topbar(){const g=GR.school.includes(tab)?GR.school:GR.leren.includes(tab)?GR.leren:GR.ai.includes(tab)?GR.ai:null;
  return `<div class="row top"><input id="gs" class="gs" placeholder="Zoeken in alles… (Enter)" value="${esc(sq)}" onkeydown="if(event.key==='Enter'){sq=this.value;tab='zoek';R()}"><button class="b g" onclick="tab='over';R()" aria-label="Instellingen">⚙ Instellingen</button></div>${g?`<div class="pills">${g.map(k=>`<button class="pill ${tab===k?'on':''}" onclick="tab='${k}';R()">${SUBN[k]}</button>`).join('')}</div>`:''}`}
 const _cij2=V.cijfers;V.cijfers=()=>_cij2().replace(/<div class="row sp"><b>([^<]*)<\/b><b>/g,(m,a)=>`<div class="row sp"><b style="cursor:pointer;color:var(--ac)" onclick="vkOpen(decodeURIComponent('${encodeURIComponent(unesc(a)).replace(/'/g,'%27')}'))">${a} ›</b><b>`);
 const _de=dashExtra;dashExtra=()=>{const v=allVak();return _de()+(v.length?`<div class="card"><h3>Vakken</h3><div class="pills" style="flex-wrap:wrap">${v.map(x=>`<button class="pill" onclick="vkOpen(decodeURIComponent('${encodeURIComponent(x).replace(/'/g,'%27')}'))">${esc(x)}</button>`).join('')}</div></div>`:'')};
@@ -333,9 +340,9 @@ function gRun(kind,L){const need=kind==='mem'?4:3;if(!L||L.k.length<need){alert(
 function gNext(){const k=G.L.k,c=k[Math.floor(Math.random()*k.length)];G.c=c;G.opts=shuf([c.a,...shuf(k.filter(x=>x!==c&&x.a!==c.a)).slice(0,3).map(x=>x.a)]);G.fb=null}
 function gAns(i){if(!G||G.fb||G.over)return;const ok=G.opts[i]===G.c.a;G.n++;if(ok){G.ok++;G.combo++;G.score+=10*(1+Math.floor(G.combo/3));stAdd('cards',1)}else{G.combo=0;G.lives--;G.c.b=0;G.c.due=0}G.fb={ok,i};save();R();
  setTimeout(()=>{if(!G||G.over)return;if(G.lives<=0)gEnd();else{gNext();R()}},ok?350:900)}
-function gEnd(){if(!G||G.over)return;G.over=true;S.hs=S.hs||{};if(G.score>(S.hs[G.L.id]||0)){S.hs[G.L.id]=G.score;G.rec=true}save();R()}
+function gEnd(){if(!G||G.over)return;G.over=true;S.st=S.st||{};(S.st.gm=S.st.gm||[]).push({d:iso(new Date()),l:G.L.n,k:'blitz',s:G.score});S.hs=S.hs||{};if(G.score>(S.hs[G.L.id]||0)){S.hs[G.L.id]=G.score;G.rec=true}save();R()}
 function gTile(i){const t=G.t[i];if(G.lock||t.st||G.done)return;t.st=1;G.sel.push(i);
- if(G.sel.length===2){G.moves++;const[a,b]=G.sel.map(j=>G.t[j]);if(a.p===b.p){a.st=b.st=2;G.sel=[];if(G.t.every(x=>x.st===2)){G.done=true;G.sec=Math.round((Date.now()-G.t0)/1e3);stAdd('cards',G.t.length/2)}}
+ if(G.sel.length===2){G.moves++;const[a,b]=G.sel.map(j=>G.t[j]);if(a.p===b.p){a.st=b.st=2;G.sel=[];if(G.t.every(x=>x.st===2)){G.done=true;G.sec=Math.round((Date.now()-G.t0)/1e3);stAdd('cards',G.t.length/2);S.st=S.st||{};(S.st.gm=S.st.gm||[]).push({d:iso(new Date()),l:G.L.n,k:'mem',m:G.moves,s:G.sec})}}
   else{G.lock=true;setTimeout(()=>{if(!G)return;G.t[G.sel[0]].st=0;G.t[G.sel[1]].st=0;G.sel=[];G.lock=false;R()},800)}}R()}
 setInterval(()=>{if(!G||G.kind!=='blitz'||G.over)return;const r=G.end-Date.now();if(r<=0){gEnd();return}const e=document.getElementById('gt'),b=document.getElementById('gb');if(e)e.textContent=Math.ceil(r/1e3)+' s';if(b)b.style.width=r/600+'%'},250);
 V.spel=()=>{
@@ -393,6 +400,50 @@ async function doSetPw(){const a=gv('p1'),b=gv('p2');if(a.length<8){amsg='Minima
 
 
 
+
+const APP_V='0.5.0',NEWS=['AI-tabblad met coach en AI-flashcards','Eigen achtergrond en kleuren (Over SomGo)','Geschiedenis en vergelijken bij Voortgang'];
+const _ib=ibar;ibar=()=>_ib()+upbar();
+function upbar(){if(SB&&!USER)return'';let s='';try{s=localStorage.getItem('somgo:seen')}catch(e){}if(s===APP_V)return'';return `<div class="ib up"><span><b>Nieuwe update ${APP_V}:</b> ${NEWS.map(esc).join(' · ')}</span><div><button class="b x" onclick="seeUp()">Oké</button></div></div>`}
+function seeUp(){try{localStorage.setItem('somgo:seen',APP_V)}catch(e){}R()}
+const UID={ac:'#5b4be0',ca:100,dim:55};
+function uiGet(){try{return Object.assign({},UID,JSON.parse(localStorage.getItem('somgo:ui')||'{}'))}catch(e){return{...UID}}}
+const lite=(h,p)=>{const n=parseInt(h.slice(1),16);return '#'+[16,8,0].map(s=>{const c=(n>>s)&255;return Math.round(c+(255-c)*p).toString(16).padStart(2,'0')}).join('')};
+function applyUI(){const u=uiGet(),r=document.documentElement.style,b=document.body.style;r.setProperty('--ac',u.ac);r.setProperty('--ac2',lite(u.ac,.3));r.setProperty('--ca',u.ca);r.setProperty('--dim',u.dim/100);
+ let bg=null;try{bg=localStorage.getItem('somgo:bg')}catch(e){}
+ if(bg){b.backgroundImage=`url(${bg})`;b.backgroundSize='cover';b.backgroundPosition='center';b.backgroundAttachment='fixed';document.body.classList.add('hasbg')}else{b.backgroundImage=b.backgroundSize=b.backgroundPosition=b.backgroundAttachment='';document.body.classList.remove('hasbg')}}
+function setUI(k,v){const u=uiGet();u[k]=v;try{localStorage.setItem('somgo:ui',JSON.stringify(u))}catch(e){}applyUI()}
+function setBg(f){if(!f)return;const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const k=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);try{localStorage.setItem('somgo:bg',c.toDataURL('image/jpeg',.8));applyUI();R()}catch(e){alert('Deze afbeelding is te groot om op te slaan. Kies een kleinere.')}URL.revokeObjectURL(u)};im.onerror=()=>alert('Dit bestand kan ik niet openen.');im.src=u}
+function clrBg(){try{localStorage.removeItem('somgo:bg')}catch(e){}applyUI();R()}
+function resetUI(){try{localStorage.removeItem('somgo:ui')}catch(e){}applyUI();R()}
+const _over3=V.over;V.over=()=>{const u=uiGet();return _over3().replace('Versie 0.2.0','Versie '+APP_V)+`<div class="card"><h3>Uiterlijk aanpassen</h3><p class="mu">Geldt alleen op dit apparaat.</p><div class="row">${['#5b4be0','#2563eb','#0ea5e9','#10b981','#f59e0b','#ef4444','#ec4899'].map(c=>`<button class="b" aria-label="kleur" style="background:${c};width:34px;height:34px;padding:0;border-radius:50%;flex:none" onclick="setUI('ac','${c}');R()"></button>`).join('')}<input type="color" value="${u.ac}" oninput="setUI('ac',this.value)" style="padding:2px;width:44px;height:36px;flex:none"></div><div class="row"><span class="mu">Kaarten doorzichtig</span><input type="range" min="40" max="100" value="${u.ca}" oninput="setUI('ca',+this.value)"></div><div class="row"><span class="mu">Achtergrond dimmen</span><input type="range" min="0" max="90" value="${u.dim}" oninput="setUI('dim',+this.value)"></div><div class="row"><input type="file" accept="image/*" onchange="setBg(this.files[0])"><button class="b g" onclick="clrBg()">Achtergrond weg</button><button class="b g" onclick="resetUI()">Standaard</button></div></div><div class="card"><h3>Wat is er nieuw (versie ${APP_V})</h3>${NEWS.map(n=>`<p>• ${esc(n)}</p>`).join('')}</div>`};
+function sums(a,b){const s=S.st||{},f=o=>{let t=0;for(let i=a;i<b;i++){const d=new Date();d.setDate(d.getDate()-i);t+=((o||{})[iso(d)]||0)}return t};return{c:f(s.cards),m:f(s.min)}}
+const dl=(a,b)=>a===b?'<span class="mu">=</span>':a>b?`<span style="color:#10b981">▲ ${a-b}</span>`:`<span style="color:#ef4444">▼ ${b-a}</span>`;
+function spark(v){if(v.length<2)return'';const W=120,H=34,x=i=>2+i*(W-4)/(v.length-1),y=p=>H-3-p*(H-6)/100;return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="vertical-align:middle"><polyline points="${v.map((p,i)=>x(i)+','+y(p)).join(' ')}" fill="none" stroke="var(--ac)" stroke-width="2"/></svg>`}
+function histCard(){const a=sums(0,7),b=sums(7,14),by={};((S.st||{}).res||[]).forEach(r=>(by[r.l]=by[r.l]||[]).push(Math.round(100*r.ok/r.n)));const gm=((S.st||{}).gm||[]).slice(-5).reverse();
+ return `<div class="card"><h3>Geschiedenis en vergelijken</h3><div class="row sp"><span>Kaarten deze week</span><b>${a.c} ${dl(a.c,b.c)}</b></div><div class="row sp"><span>Studietijd deze week (min)</span><b>${a.m} ${dl(a.m,b.m)}</b></div><p class="mu">Vergeleken met de week ervoor.</p>${Object.keys(by).map(l=>{const v=by[l],last=v[v.length-1],prev=v.length>1?v[v.length-2]:null;return `<div class="row sp"><span><b>${esc(l)}</b><br><span class="mu">${v.length}× gemaakt · beste ${Math.max(...v)}%</span></span><span>${spark(v.slice(-8))} <b>${last}%</b> ${prev===null?'':dl(last,prev)}</span></div>`}).join('')||'<p class="mu">Maak oefentoetsen om je resultaten te vergelijken.</p>'}${gm.length?`<h3 style="margin-top:14px">Laatste spelletjes</h3>${gm.map(g=>`<div class="row sp"><span>${esc(g.l)} · ${g.k==='mem'?'Memory':'Blitz'} <span class="mu">${esc(g.d)}</span></span><b>${g.k==='mem'?g.m+' zetten':g.s+' pt'}</b></div>`).join('')}`:''}</div>`}
+const _vg2=V.vg;V.vg=()=>_vg2()+histCard();
+let chat=[],chatBusy=false,aiCards=null,aiMsg='';try{chat=JSON.parse(localStorage.getItem('somgo:chat')||'[]')}catch(e){}
+const chatSave=()=>{try{localStorage.setItem('somgo:chat',JSON.stringify(chat.slice(-30)))}catch(e){}};
+const SUG=['Geef advies op basis van mijn resultaten','Hoe bereid ik me beter voor op mijn volgende toets?','Maak een studieplan voor deze week'];
+function ctx(){const s=S.st||{},res=(s.res||[]).slice(-8).map(r=>`${r.l}: ${r.ok}/${r.n} (${r.d})`).join('; '),vs=[...new Set(S.g.map(x=>x.v))].map(v=>`${v} ${avg(S.g.filter(x=>x.v===v)).toFixed(1)}`).join(', '),w=sums(0,7),w2=sums(7,14),ex=(S.x||[]).filter(x=>x.d>=iso(new Date())).slice(0,5).map(x=>`${x.v} op ${x.d}${x.n?' ('+x.n+')':''}`).join('; ');
+ return `Gemiddelden: ${vs||'geen'}. Oefentoetsen: ${res||'geen'}. Deze week: ${w.c} kaarten, ${w.m} min studeren; vorige week: ${w2.c} kaarten, ${w2.m} min. Streak: ${streak()} dagen. Komende toetsen: ${ex||'geen'}.`}
+async function aiCall(body){if(!SB)throw new Error('AI werkt alleen als je bent ingelogd.');const{data}=await SB.auth.getSession(),t=data.session&&data.session.access_token,r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+t},body:JSON.stringify(body)}),j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Er ging iets mis ('+r.status+')');return j}
+async function aiSend(txt){txt=(txt||'').trim();if(!txt||chatBusy)return;chat.push({r:'user',t:txt});chatBusy=true;aiMsg='';chatSave();R();
+ try{const j=await aiCall({mode:'chat',context:ctx(),messages:chat.slice(-12)});chat.push({r:'model',t:j.text})}catch(e){aiMsg=e.message}chatBusy=false;chatSave();R();const l=document.getElementById('cl');if(l)l.scrollTop=l.scrollHeight}
+async function aiGen(){const t=gv('agT').trim(),n=Math.min(25,+gv('agN')||10),vak=gv('agV'),level=gv('agL');if(t.length<3){aiMsg='Vul een onderwerp of tekst in.';return R()}chatBusy=true;aiMsg='';aiCards=null;R();
+ try{const j=await aiCall({mode:'cards',text:t,n,vak,level});aiCards={cards:j.cards.map(c=>({...c,on:true})),name:(vak||'AI')+': '+t.slice(0,30)}}catch(e){aiMsg=e.message}chatBusy=false;R()}
+function aiSave(){const k=aiCards.cards.filter(c=>c.on).map(c=>({q:c.q,a:c.a,b:0,due:0}));if(!k.length)return;S.c.push({id:uid(),n:gv('agName')||aiCards.name,k});save();aiCards=null;tab='leren';R()}
+const md=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');
+const aiOk=()=>{try{return localStorage.getItem('somgo:ainote')==='1'}catch(e){return true}};
+const aiNote=()=>`<div class="card"><h3>Voordat je de AI gebruikt</h3><p>Je berichten en een korte samenvatting van je studieresultaten (zonder naam of e-mailadres) worden naar Google Gemini gestuurd. Bij de gratis versie kan Google dat gebruiken om zijn producten te verbeteren. Vul daarom geen persoonlijke gegevens in en controleer antwoorden zelf: AI kan fouten maken.</p><button class="b" onclick="try{localStorage.setItem('somgo:ainote','1')}catch(e){}R()">Ik begrijp het</button></div>`;
+V.ai=()=>{if(!aiOk())return'<h1>AI-coach</h1>'+aiNote();
+ return `<h1>AI-coach</h1><div class="card"><div id="cl" style="max-height:48vh;overflow:auto">${chat.length?chat.map(m=>`<div style="margin:8px 0;text-align:${m.r==='user'?'right':'left'}"><span style="display:inline-block;max-width:90%;padding:8px 12px;border-radius:14px;background:${m.r==='user'?'var(--ac)':'var(--bd)'};color:${m.r==='user'?'#fff':'var(--tx)'};text-align:left">${md(m.t)}</span></div>`).join(''):`<p class="mu">Vraag om advies, uitleg of een studieplan. De coach gebruikt je resultaten uit SomGo.</p><div class="pills" style="flex-wrap:wrap">${SUG.map((x,i)=>`<button class="pill" onclick="aiSend(SUG[${i}])">${esc(x)}</button>`).join('')}</div>`}${chatBusy?'<p class="mu">De AI denkt na…</p>':''}</div>${aiMsg?`<p style="color:#ef4444">${esc(aiMsg)}</p>`:''}<div class="row" style="margin-top:10px"><input id="ci" style="flex:1" placeholder="Typ je vraag…" ${chatBusy?'disabled':''} onkeydown="if(event.key==='Enter')aiSend(this.value)"><button class="b" ${chatBusy?'disabled':''} onclick="aiSend($('ci'))">Stuur</button><button class="b g" onclick="chat=[];chatSave();R()">Wis</button></div></div>`};
+V.aicards=()=>{if(!aiOk())return'<h1>AI-flashcards</h1>'+aiNote();
+ if(aiCards)return `<h1>AI-flashcards</h1><div class="card"><div class="row"><input id="agName" value="${esc(aiCards.name)}" style="flex:1"></div>${aiCards.cards.map((c,i)=>`<div class="row"><label style="flex:1"><input type="checkbox" ${c.on?'checked':''} onchange="aiCards.cards[${i}].on=this.checked"> <b>${esc(c.q)}</b> · ${esc(c.a)}</label></div>`).join('')}<div class="row" style="margin-top:10px"><button class="b" onclick="aiSave()">Opslaan als leerlijst</button><button class="b g" onclick="aiCards=null;R()">Weggooien</button></div><p class="mu">Controleer de kaarten: AI kan fouten maken.</p></div>`;
+ return `<h1>AI-flashcards</h1><div class="card"><p class="mu">Typ een onderwerp of plak tekst uit je boek. De AI maakt er flashcards van.</p><div class="row"><input id="agV" placeholder="Vak (bijv. Biologie)"><input id="agL" placeholder="Niveau (bijv. HAVO 3)"><input id="agN" type="number" value="10" min="3" max="25" style="max-width:90px"></div><textarea id="agT" placeholder="Onderwerp of tekst…"></textarea><div class="row" style="margin-top:10px"><button class="b" ${chatBusy?'disabled':''} onclick="aiGen()">${chatBusy?'Bezig…':'Maak flashcards'}</button></div>${aiMsg?`<p style="color:#ef4444">${esc(aiMsg)}</p>`:''}</div>`};
+GR.ai=['ai','aicards'];SUBN.ai='Coach';SUBN.aicards='Flashcards';
+Object.assign(IC,{ai:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22"/>'});
+TABS.splice(4,0,['ai','AI']);applyUI();
 
 boot();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
